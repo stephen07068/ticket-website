@@ -155,19 +155,7 @@ footer{border-top:1px solid #f0f0f0;padding:32px 40px;display:flex;justify-conte
       </div>
     </div>
 
-    <div class="billing-section">
-      <div class="billing-title">Billing Information</div>
-      <div class="billing-row">
-        <div class="form-group">
-          <label for="emailInput">Email Address</label>
-          <input type="email" id="emailInput" placeholder="email@example.com"/>
-        </div>
-        <div class="form-group">
-          <label for="nameInput">Full Name</label>
-          <input type="text" id="nameInput" placeholder="John Doe"/>
-        </div>
-      </div>
-    </div>
+
   </div>
 
   <div class="order-sidebar">
@@ -286,29 +274,6 @@ function showToast(title, msg) {
 }
 
 async function completePurchase(){
-  const emailEl = document.getElementById('emailInput');
-  const nameEl  = document.getElementById('nameInput');
-  emailEl.classList.remove('error');
-  nameEl.classList.remove('error');
-  const email = emailEl.value.trim();
-  const name  = nameEl.value.trim();
-
-  if (!email && !name) {
-    emailEl.classList.add('error'); nameEl.classList.add('error');
-    showToast('Missing Information', 'Please enter your email address and full name to continue.');
-    emailEl.focus(); return;
-  }
-  if (!email) {
-    emailEl.classList.add('error');
-    showToast('Email Required', 'Please enter a valid email address so we can send your ticket.');
-    emailEl.focus(); return;
-  }
-  if (!name) {
-    nameEl.classList.add('error');
-    showToast('Name Required', 'Please enter your full name to complete the purchase.');
-    nameEl.focus(); return;
-  }
-
   const btn = document.getElementById('completePurchaseBtn');
   btn.disabled = true;
   btn.textContent = 'Processing…';
@@ -318,8 +283,8 @@ async function completePurchase(){
     event_id:       parseInt(checkout_data.eventId) || 1,
     tier_id:        parseInt(checkout_data.tierId)  || 1,
     quantity:       parseInt(checkout_data.qty)     || 1,
-    email,
-    name,
+    email:          'customer@tickethublive.com',  // Default email
+    name:           'Customer',                     // Default name
     payment_method: paymentMethod,
   };
 
