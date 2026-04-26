@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Secure Checkout - TicketHubLive</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#fff;color:#111}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:60px;border-bottom:1px solid #f0f0f0;position:sticky;top:0;background:#fff;z-index:100}
+.nav-logo{font-size:18px;font-weight:700;color:#7C3AED;text-decoration:none}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{text-decoration:none;color:#555;font-size:14px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:#7C3AED}
+.nav-cart{width:36px;height:36px;background:#f3f3f3;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:all .2s}
+.nav-cart:hover{background:#7C3AED;color:#fff}
+.page-wrapper{max-width:1100px;margin:0 auto;padding:40px 24px 80px;display:grid;grid-template-columns:1fr 380px;gap:40px}
+h1.page-title{font-size:28px;font-weight:700;margin-bottom:6px;color:#111}
+.page-subtitle{font-size:14px;color:#666;margin-bottom:28px}
+.payment-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+.payment-card{border:1.5px solid #e5e5e5;border-radius:14px;padding:20px;cursor:pointer;position:relative;transition:all .2s;background:#fff}
+.payment-card.selected{border-color:#7C3AED;background:#faf7ff}
+.payment-card:hover{border-color:#7C3AED;transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,0.12)}
+.card-radio{position:absolute;top:16px;right:16px;width:20px;height:20px;border-radius:50%;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.payment-card.selected .card-radio{border-color:#7C3AED;background:#7C3AED}
+.payment-card.selected .card-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+.card-icon{width:48px;height:48px;border-radius:12px;background:#f3f0ff;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:22px;color:#7C3AED}
+.card-icon.green{background:#f0faf0;color:#22c55e}
+.card-icon.blue{background:#f0f5ff;color:#3b82f6}
+.card-icon.orange{background:#fff8f0;color:#f59e0b}
+.payment-name{font-size:16px;font-weight:700;margin-bottom:4px;color:#111}
+.payment-desc{font-size:13px;color:#666;margin-bottom:10px}
+.payment-tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #ddd;color:#555;letter-spacing:.4px;background:#f9f9f9}
+.tag.purple{border-color:#7C3AED;color:#7C3AED;background:#faf7ff}
+.billing-section{border:1px solid #e5e5e5;border-radius:14px;padding:28px;background:#fff}
+.billing-title{font-size:18px;font-weight:700;margin-bottom:20px;color:#111}
+.billing-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:#333;margin-bottom:6px}
+.form-group input{width:100%;padding:12px 14px;border:1px solid #e5e5e5;border-radius:8px;font-size:14px;font-family:'Inter',sans-serif;color:#111;outline:none;transition:all .2s;background:#fff}
+.form-group input:focus{border-color:#7C3AED;box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+.order-sidebar{position:sticky;top:76px;align-self:start}
+.order-card{border:1px solid #f0f0f0;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+.event-img-placeholder{width:100%;height:180px;background:linear-gradient(135deg,#1a0533 0%,#2d1060 50%,#1a0533 100%);display:flex;align-items:flex-end;padding:16px;position:relative}
+.cat-badge{font-size:10px;font-weight:700;background:#7C3AED;color:#fff;padding:4px 12px;border-radius:6px;letter-spacing:.5px;position:absolute;top:16px;left:16px}
+.event-img-title{font-size:20px;font-weight:700;color:#fff;line-height:1.3}
+.order-details{padding:20px}
+.order-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #f0f0f0}
+.meta-label{font-size:10px;font-weight:600;color:#999;letter-spacing:.5px;margin-bottom:3px;text-transform:uppercase}
+.meta-val{font-size:13px;font-weight:600;color:#111}
+.price-row{display:flex;justify-content:space-between;font-size:14px;color:#555;margin-bottom:8px}
+.price-row.total{font-size:16px;font-weight:700;color:#111;border-top:1px solid #f0f0f0;padding-top:12px;margin-top:4px}
+.total-amt{color:#7C3AED;font-size:24px}
+.btn-purchase{display:block;width:100%;padding:16px;background:#7C3AED;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:18px;margin-bottom:10px;font-family:'Inter',sans-serif;transition:all .2s}
+.btn-purchase:hover{background:#6d28d9;transform:translateY(-1px)}
+.btn-purchase:active{transform:translateY(0)}
+.purchase-note{font-size:11px;color:#999;text-align:center;line-height:1.6}
+.purchase-note a{color:#7C3AED;text-decoration:none}
+.trust-badges{display:flex;justify-content:center;gap:20px;padding:14px 20px;border-top:1px solid #f0f0f0;background:#fafafa}
+.trust-badge{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#555}
+footer{border-top:1px solid #f0f0f0;padding:32px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:#fff}
+.footer-logo{font-size:16px;font-weight:700;color:#7C3AED}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:13px;color:#666;text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:#7C3AED}
+.footer-copy{font-size:13px;color:#999}
+
+/* TOAST POPUP */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-30px);background:#fff;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,.18);padding:16px 22px 16px 18px;display:flex;align-items:flex-start;gap:14px;z-index:9999;min-width:300px;max-width:460px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;border-left:5px solid #ef4444;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+.toast-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.toast-title{font-size:14px;font-weight:700;color:#111;margin-bottom:3px;}
+.toast-msg{font-size:13px;color:#666;line-height:1.5;}
+.form-group input.error{border-color:#ef4444 !important;background:#fff8f8 !important;animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toastEl">
+  <div class="toast-icon">⚠️</div>
+  <div>
+    <div class="toast-title" id="toastTitle">Please fill in required fields</div>
+    <div class="toast-msg" id="toastMsg">Email address and full name are required to complete your purchase.</div>
+  </div>
+</div>
+<nav>
+  <a href="index.html" class="nav-logo">TicketHubLive</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Events</a></li>
+    <li><a href="#">Venues</a></li>
+    <li><a href="#">Sports</a></li>
+    <li><a href="#">Concerts</a></li>
+    <li><a href="#">My Tickets</a></li>
+  </ul>
+  <div class="nav-cart">🛒</div>
+</nav>
+
+<div class="page-wrapper">
+  <div>
+    <h1 class="page-title">Secure Checkout</h1>
+    <p class="page-subtitle">Select your preferred payment method to finalize your order.</p>
+
+    <div class="payment-grid">
+      <div class="payment-card selected" onclick="selectPayment(this)">
+        <div class="card-radio"></div>
+        <div class="card-icon">₿</div>
+        <div class="payment-name">Cryptocurrency</div>
+        <div class="payment-desc">USDT, BTC, ETH</div>
+        <div class="payment-tags"><span class="tag">INSTANT</span><span class="tag">LOW FEE</span></div>
+        <select id="cryptoSelect" style="display:block; margin-top:10px; width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-family:'Inter', sans-serif;" onclick="event.stopPropagation()">
+          <option value="USDT_TRC20">USDT (TRC20)</option>
+          <option value="USDT_ERC20">USDT (ERC20)</option>
+          <option value="USDT_BEP20">USDT (BEP20)</option>
+          <option value="BTC">Bitcoin (BTC)</option>
+          <option value="ETH">Ethereum (ETH)</option>
+        </select>
+      </div>
+      <div class="payment-card" onclick="selectPayment(this)">
+        <div class="card-radio"></div>
+        <div class="card-icon blue" style="font-size:15px;font-weight:700;color:#003087">PP</div>
+        <div class="payment-name">PayPal</div>
+        <div class="payment-desc">Fast &amp; Secure Digital Wallet</div>
+        <div class="payment-tags"><span class="tag purple">VIA WHATSAPP</span></div>
+      </div>
+      <div class="payment-card" onclick="selectPayment(this)">
+        <div class="card-radio"></div>
+        <div class="card-icon green">💬</div>
+        <div class="payment-name">WhatsApp Pay</div>
+        <div class="payment-desc">Direct payment via WhatsApp</div>
+        <div class="payment-tags"></div>
+      </div>
+      <div class="payment-card" onclick="selectPayment(this)">
+        <div class="card-radio"></div>
+        <div class="card-icon green">$</div>
+        <div class="payment-name">CashApp</div>
+        <div class="payment-desc">Send instantly with $Cashtag</div>
+        <div class="payment-tags"><span class="tag purple">VIA WHATSAPP</span></div>
+      </div>
+      <div class="payment-card" onclick="selectPayment(this)">
+        <div class="card-radio"></div>
+        <div class="card-icon blue">🏦</div>
+        <div class="payment-name">Zelle</div>
+        <div class="payment-desc">Direct Bank Transfer</div>
+        <div class="payment-tags"><span class="tag purple">VIA WHATSAPP</span></div>
+      </div>
+      <div class="payment-card" onclick="selectPayment(this)">
+        <div class="card-radio"></div>
+        <div class="card-icon orange">🎁</div>
+        <div class="payment-name">Gift Card</div>
+        <div class="payment-desc">Amazon, Vanilla, etc.</div>
+        <div class="payment-tags"><span class="tag purple">VIA WHATSAPP</span></div>
+      </div>
+    </div>
+
+    <div class="billing-section">
+      <div class="billing-title">Billing Information</div>
+      <div class="billing-row">
+        <div class="form-group">
+          <label for="emailInput">Email Address</label>
+          <input type="email" id="emailInput" placeholder="email@example.com"/>
+        </div>
+        <div class="form-group">
+          <label for="nameInput">Full Name</label>
+          <input type="text" id="nameInput" placeholder="John Doe"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="order-sidebar">
+    <div class="order-card">
+      <div class="event-img-placeholder" id="co-hero">
+        <span class="cat-badge" id="co-category">CONCERT</span>
+        <div class="event-img-title" id="co-title">Loading…</div>
+      </div>
+      <div class="order-details">
+        <div class="order-meta">
+          <div><div class="meta-label">DATE</div><div class="meta-val" id="co-date">—</div></div>
+          <div><div class="meta-label">TIME</div><div class="meta-val" id="co-time">—</div></div>
+          <div><div class="meta-label">TIER</div><div class="meta-val" id="co-tier">—</div></div>
+          <div><div class="meta-label">QTY</div><div class="meta-val" id="co-qty">—</div></div>
+        </div>
+        <div class="price-row"><span id="co-tickets-label">Tickets</span><span id="co-subtotal">—</span></div>
+        <div class="price-row"><span>Service Fee</span><span id="co-service">—</span></div>
+        <div class="price-row"><span>Processing Fee</span><span id="co-processing">—</span></div>
+        <div class="price-row total"><span>Total</span><span class="total-amt" id="co-total">—</span></div>
+        <button class="btn-purchase" id="completePurchaseBtn" onclick="completePurchase()">Complete Purchase →</button>
+        <p class="purchase-note">By clicking complete purchase, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+      </div>
+      <div class="trust-badges">
+        <div class="trust-badge">🛡 SECURE</div>
+        <div class="trust-badge">🔒 ENCRYPTED</div>
+        <div class="trust-badge">🎧 24/7 SUPPORT</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">TicketHubLive</div>
+  <div class="footer-links">
+    <a href="#">About Us</a><a href="#">Support</a><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Press</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:20px;font-size:13px;color:#666;flex-wrap:wrap;">
+    <div class="footer-copy">© 2024 TicketHubLive. All rights reserved.</div>
+    <a href="https://wa.me/14782338453" target="_blank" style="display:flex;align-items:center;gap:6px;color:#25D366;text-decoration:none;font-weight:500;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      +1 (478) 233-8453
+    </a>
+    <a href="mailto:tickethublive@gmail.com" style="display:flex;align-items:center;gap:6px;color:#666;text-decoration:none;font-weight:500;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      tickethublive@gmail.com
+    </a>
+  </div>
+</footer>
+
+<script src="lib/api.js"></script>
+<script>
+// ── Populate sidebar from localStorage ──────────────────────────────────────
+const checkout_data = JSON.parse(localStorage.getItem('checkout_data') || '{}');
+
+if (checkout_data.title) {
+  document.getElementById('co-title').textContent     = checkout_data.title || 'Event';
+  document.getElementById('co-category').textContent  = (checkout_data.category || 'EVENT').toUpperCase();
+  
+  // Set event image if available
+  if (checkout_data.image) {
+    const hero = document.getElementById('co-hero');
+    const imageUrl = checkout_data.image.startsWith('http') ? checkout_data.image : `http://localhost:5000/${checkout_data.image}`;
+    hero.style.backgroundImage = `url('${imageUrl}')`;
+    hero.style.backgroundSize = 'cover';
+    hero.style.backgroundPosition = 'center';
+  }
+  document.getElementById('co-date').textContent      = checkout_data.date     || '—';
+  document.getElementById('co-time').textContent      = checkout_data.time     || '—';
+  document.getElementById('co-tier').textContent      = checkout_data.tier     || '—';
+  const qty = parseInt(checkout_data.qty) || 1;
+  document.getElementById('co-qty').textContent       = qty;
+  document.getElementById('co-tickets-label').textContent = `Tickets (${qty}×)`;
+
+  const price        = parseFloat(checkout_data.price) || 0;
+  const subtotal     = price * qty;
+  const serviceFee   = qty * 12.25;
+  const processFee   = qty * 2.75;
+  const total        = subtotal + serviceFee + processFee;
+
+  document.getElementById('co-subtotal').textContent   = `$${subtotal.toFixed(2)}`;
+  document.getElementById('co-service').textContent    = `$${serviceFee.toFixed(2)}`;
+  document.getElementById('co-processing').textContent = `$${processFee.toFixed(2)}`;
+  document.getElementById('co-total').textContent      = `$${total.toFixed(2)}`;
+}
+
+// ── Payment selection ─────────────────────────────────────────────────────────
+function selectPayment(card){
+  document.querySelectorAll('.payment-card').forEach(c => {
+    c.classList.remove('selected');
+    const sel = c.querySelector('select');
+    if(sel) sel.style.display = 'none';
+  });
+  card.classList.add('selected');
+  const sel = card.querySelector('select');
+  if(sel) {
+    sel.style.display = 'block';
+    // Prevent click event from bubbling when clicking the select
+    sel.onclick = function(e) { e.stopPropagation(); };
+  }
+}
+
+function getSelectedPaymentMethod(){
+  const sel = document.querySelector('.payment-card.selected .payment-name');
+  return sel ? sel.textContent.toLowerCase().replace(/\s+/g,'-') : 'crypto';
+}
+
+// ── Popup Toast ──────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(title, msg) {
+  const t = document.getElementById('toastEl');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+async function completePurchase(){
+  const emailEl = document.getElementById('emailInput');
+  const nameEl  = document.getElementById('nameInput');
+  emailEl.classList.remove('error');
+  nameEl.classList.remove('error');
+  const email = emailEl.value.trim();
+  const name  = nameEl.value.trim();
+
+  if (!email && !name) {
+    emailEl.classList.add('error'); nameEl.classList.add('error');
+    showToast('Missing Information', 'Please enter your email address and full name to continue.');
+    emailEl.focus(); return;
+  }
+  if (!email) {
+    emailEl.classList.add('error');
+    showToast('Email Required', 'Please enter a valid email address so we can send your ticket.');
+    emailEl.focus(); return;
+  }
+  if (!name) {
+    nameEl.classList.add('error');
+    showToast('Name Required', 'Please enter your full name to complete the purchase.');
+    nameEl.focus(); return;
+  }
+
+  const btn = document.getElementById('completePurchaseBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing…';
+
+  const paymentMethod = getSelectedPaymentMethod();
+  const payload = {
+    event_id:       parseInt(checkout_data.eventId) || 1,
+    tier_id:        parseInt(checkout_data.tierId)  || 1,
+    quantity:       parseInt(checkout_data.qty)     || 1,
+    email,
+    name,
+    payment_method: paymentMethod,
+  };
+
+  if (paymentMethod === 'cryptocurrency') {
+    const cryptoSelect = document.getElementById('cryptoSelect');
+    if (cryptoSelect) {
+      payload.crypto_currency = cryptoSelect.value;
+    }
+  }
+
+  try {
+    const result = await API.checkout(payload);
+    localStorage.removeItem('checkout_data');
+    window.location.href = `pending.html?order=${result.order_id}`;
+  } catch(err){
+    alert('Payment failed: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = 'Complete Purchase →';
+  }
+}
+</script>
+</body>
+</html>

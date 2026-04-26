@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Portal - TicketHubLive</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;flex-shrink:0;min-height:100vh}
+.sidebar-logo{padding:24px 20px;display:flex;align-items:center;gap:12px;text-decoration:none;border-bottom:1px solid #f0f0f0}
+.logo-icon{width:36px;height:36px;background:#6c2bd9;border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px}
+.logo-text{display:flex;flex-direction:column}
+.logo-main{font-weight:700;font-size:15px;color:#111}
+.logo-sub{font-size:10px;color:#999;font-weight:600;letter-spacing:.5px}
+
+.nav-menu{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 16px;text-decoration:none;color:#555;font-size:14px;font-weight:500;border-radius:8px;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:background .15s,color .15s}
+.nav-item:hover{background:#f5f5f5;color:#111}
+.nav-item.active{background:#f0ebff;color:#6c2bd9;font-weight:600}
+.nav-icon{font-size:18px;width:22px;text-align:center}
+
+.nav-badge{margin-left:auto;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+
+.sidebar-bottom{padding:16px 12px;border-top:1px solid #eee}
+.bottom-item{display:flex;align-items:center;gap:12px;padding:10px 16px;text-decoration:none;color:#555;font-size:14px;font-weight:500;border-radius:8px;transition:background .15s}
+.bottom-item:hover{background:#f5f5f5;color:#111}
+.bottom-item.support{color:#6c2bd9}
+
+/* MAIN */
+.main-content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* HEADER */
+.top-header{height:64px;background:#fff;border-bottom:1px solid #e5e5e5;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.header-title{font-size:20px;font-weight:700;color:#111}
+.header-right{display:flex;align-items:center;gap:20px}
+.user-profile{display:flex;align-items:center;gap:12px;padding-left:20px;border-left:1px solid #e5e5e5}
+.user-name{font-size:14px;font-weight:600;color:#111}
+.user-role{font-size:11px;color:#999}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:#6c2bd9;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+
+/* CONTENT PANELS */
+.content-panel{display:none;flex:1;overflow-y:auto;padding:32px}
+.content-panel.active{display:block}
+
+/* ORDERS */
+.orders-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.orders-title{font-size:22px;font-weight:700}
+.filter-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{padding:8px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#555;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.filter-btn:hover{border-color:#6c2bd9;color:#6c2bd9}
+.filter-btn.active{border-color:#6c2bd9;background:#f0ebff;color:#6c2bd9;font-weight:600}
+
+.orders-table-wrap{background:#fff;border-radius:14px;border:1px solid #e5e5e5;overflow:hidden}
+.orders-table{width:100%;border-collapse:collapse}
+.orders-table th{padding:14px 16px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;background:#fafafa;border-bottom:1px solid #eee;text-align:left}
+.orders-table td{padding:14px 16px;font-size:14px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+.orders-table tr:last-child td{border-bottom:none}
+.orders-table tr:hover td{background:#fafafa}
+
+.status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.status-badge.submitted{background:#fef9c3;color:#854d0e}
+.status-badge.pending{background:#f3f4f6;color:#374151}
+.status-badge.approved{background:#dcfce7;color:#166534}
+.status-badge.rejected{background:#fee2e2;color:#991b1b}
+
+.approve-btn{padding:7px 14px;background:#22c55e;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s;margin-right:6px}
+.approve-btn:hover{background:#16a34a}
+.reject-btn{padding:7px 14px;background:#ef4444;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s}
+.reject-btn:hover{background:#dc2626}
+
+.crypto-label{font-size:11px;font-weight:700;color:#6c2bd9;text-transform:uppercase;background:#f0ebff;padding:2px 7px;border-radius:4px;display:inline-block;margin-top:3px}
+.txref{font-size:11px;color:#d97706;margin-top:4px;word-break:break-all}
+.no-txref{font-size:11px;color:#ef4444;margin-top:4px}
+
+/* EVENTS FORM */
+.form-card{background:#fff;border-radius:14px;border:1px solid #e5e5e5;padding:28px;margin-bottom:24px}
+.form-card h3{font-size:16px;font-weight:700;margin-bottom:20px;color:#111}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{margin-bottom:16px}
+.form-group:last-child{margin-bottom:0}
+.form-group label{display:block;font-size:12px;font-weight:600;color:#333;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.form-input{width:100%;padding:11px 14px;border:1.5px solid #e5e5e5;border-radius:8px;font-size:14px;font-family:'Inter',sans-serif;color:#111;background:#fbfbfb;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:#6c2bd9;background:#fff}
+.form-input::placeholder{color:#bbb}
+.btn-create{padding:13px 28px;background:#6c2bd9;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background .2s}
+.btn-create:hover{background:#5a22b8}
+.btn-create:disabled{background:#bbb;cursor:not-allowed}
+
+/* DASHBOARD */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px}
+.stat-card{background:#fff;border-radius:14px;border:1px solid #e5e5e5;padding:24px}
+.stat-label{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+.stat-value{font-size:32px;font-weight:700;color:#111}
+.stat-sub{font-size:13px;color:#666;margin-top:4px}
+
+/* empty state */
+.empty-state{padding:60px;text-align:center;color:#888}
+.empty-state .icon{font-size:40px;margin-bottom:12px}
+.empty-state p{font-size:14px}
+
+/* TOAST POPUP */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-30px);background:#fff;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,.18);padding:16px 22px 16px 18px;display:flex;align-items:flex-start;gap:14px;z-index:9999;min-width:300px;max-width:460px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;border-left:5px solid #ef4444;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+.toast-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.toast-title{font-size:14px;font-weight:700;color:#111;margin-bottom:3px;}
+.toast-msg{font-size:13px;color:#666;line-height:1.5;}
+.form-group input.error{border-color:#ef4444 !important;background:#fff8f8 !important;animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toastEl">
+  <div class="toast-icon">⚠️</div>
+  <div>
+    <div class="toast-title" id="toastTitle">Please fill in required fields</div>
+    <div class="toast-msg" id="toastMsg">Please fill in Title, Venue and Date.</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a href="index.html" class="sidebar-logo">
+    <div class="logo-icon">T</div>
+    <div class="logo-text">
+      <span class="logo-main">TicketHubLive</span>
+      <span class="logo-sub">ADMIN PORTAL</span>
+    </div>
+  </a>
+
+  <nav class="nav-menu">
+    <button class="nav-item" id="nav-dashboard" onclick="showTab('dashboard')">
+      <span class="nav-icon">📊</span> Dashboard
+    </button>
+    <button class="nav-item" id="nav-orders" onclick="showTab('orders')">
+      <span class="nav-icon">📋</span> Orders
+      <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
+    </button>
+    <button class="nav-item" id="nav-manage-events" onclick="showTab('manage-events')">
+      <span class="nav-icon">🎫</span> Manage Events
+    </button>
+    <button class="nav-item" id="nav-events" onclick="showTab('events')">
+      <span class="nav-icon">➕</span> Create Event
+    </button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a href="admin-login.html" class="bottom-item">
+      <span class="nav-icon">🚪</span> Logout
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content">
+  <header class="top-header">
+    <div class="header-title" id="pageTitle">Manage Orders</div>
+    <div class="header-right">
+      <div class="user-profile">
+        <div>
+          <div class="user-name">Admin</div>
+          <div class="user-role">Super Admin</div>
+        </div>
+        <div class="user-avatar">A</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ORDERS PANEL (default) -->
+  <div class="content-panel active" id="panel-orders">
+    <div class="orders-header">
+      <div class="orders-title">Manage Orders</div>
+      <div class="filter-tabs">
+        <button class="filter-btn active" id="filter-all" onclick="filterOrders(this,'')">All</button>
+        <button class="filter-btn" id="filter-submitted" onclick="filterOrders(this,'payment_submitted')">Needs Approval</button>
+        <button class="filter-btn" id="filter-pending" onclick="filterOrders(this,'pending_payment')">Pending</button>
+        <button class="filter-btn" id="filter-approved" onclick="filterOrders(this,'approved')">Approved</button>
+      </div>
+    </div>
+
+    <div class="orders-table-wrap">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Event</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody">
+          <tr><td colspan="6" class="empty-state"><div class="icon">⏳</div><p>Loading orders…</p></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DASHBOARD PANEL -->
+  <div class="content-panel" id="panel-dashboard">
+    <div class="orders-title" style="margin-bottom:24px">Dashboard Overview</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-sub">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Needs Approval</div>
+        <div class="stat-value" id="stat-pending" style="color:#d97706">—</div>
+        <div class="stat-sub">Awaiting your action</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Approved</div>
+        <div class="stat-value" id="stat-approved" style="color:#22c55e">—</div>
+        <div class="stat-sub">Tickets issued</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANAGE EVENTS PANEL -->
+  <div class="content-panel" id="panel-manage-events">
+    <div class="orders-header">
+      <div class="orders-title">Manage Events</div>
+    </div>
+    <div class="orders-table-wrap">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Event</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Venue</th>
+            <th>Tiers</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="eventsBody">
+          <tr><td colspan="7" class="empty-state"><div class="icon">⏳</div><p>Loading events…</p></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CREATE EVENT PANEL -->
+  <div class="content-panel" id="panel-events">
+    <div class="orders-title" style="margin-bottom:24px">Create New Event</div>
+    <div class="form-card">
+      <h3>Event Details</h3>
+      <div class="form-group">
+        <label>Event Title</label>
+        <input class="form-input" id="evTitle" placeholder="e.g. Summer Music Festival"/>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Category</label>
+          <select class="form-input" id="evCategory">
+            <option>Concert</option><option>Sports</option><option>Conference</option><option>Festival</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Venue</label>
+          <input class="form-input" id="evVenue" placeholder="e.g. Madison Square Garden"/>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input class="form-input" type="date" id="evDate"/>
+        </div>
+        <div class="form-group">
+          <label>Time</label>
+          <input class="form-input" type="time" id="evTime"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-input" id="evDesc" rows="4" placeholder="Tell attendees what to expect…" style="resize:vertical"></textarea>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Event Banner Image</h3>
+      <p style="font-size:13px;color:#888;margin-bottom:16px">This image will appear on the event listing, checkout page, and ticket receipt.</p>
+      <label for="evImageInput" id="uploadArea" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:2px dashed #d0c4f7;border-radius:12px;padding:40px 20px;cursor:pointer;background:#faf8ff;transition:background .2s;">
+        <div style="width:52px;height:52px;background:#f0ebff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;">🖼️</div>
+        <div>
+          <div style="font-size:15px;font-weight:600;color:#6c2bd9;text-align:center">Click to Upload Banner Image</div>
+          <div style="font-size:12px;color:#999;text-align:center;margin-top:4px">JPG, PNG, GIF, WEBP • Max 10MB</div>
+        </div>
+        <input type="file" id="evImageInput" accept="image/*" style="display:none" onchange="previewImage(this)"/>
+      </label>
+      <div id="imagePreviewWrap" style="display:none;margin-top:16px;border-radius:12px;overflow:hidden;max-height:220px;">
+        <img id="imagePreview" src="" alt="Preview" style="width:100%;height:220px;object-fit:cover;display:block;"/>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f9f9fc;">
+          <span id="imageFileName" style="font-size:13px;color:#555"></span>
+          <button onclick="clearImage()" style="border:none;background:none;color:#ef4444;cursor:pointer;font-size:13px;font-weight:600">Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Ticket Tier</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tier Name</label>
+          <input class="form-input" id="evTierName" value="General Admission"/>
+        </div>
+        <div class="form-group">
+          <label>Price ($)</label>
+          <input class="form-input" type="number" id="evTierPrice" value="50"/>
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input class="form-input" type="number" id="evTierQty" value="200"/>
+        </div>
+      </div>
+    </div>
+    <div style="position:sticky;bottom:0;background:#f4f5f8;padding:20px 0;margin-top:20px;">
+      <button class="btn-create" id="createBtn" onclick="submitCreateEvent()" style="width:100%;max-width:300px;display:block;margin:0 auto;">Create Event</button>
+    </div>
+  </div>
+</main>
+
+<script src="lib/api.js"></script>
+<script>
+// ─── Auth Guard ───────────────────────────────────────────────────────────────
+if (!sessionStorage.getItem('adminLoggedIn')) {
+  window.location.href = 'admin-login.html';
+}
+
+// ─── GLOBAL ERROR HANDLER ─────────────────────────────────────────────────────
+window.addEventListener('error', function(e) {
+  console.error('Global error:', e.message, e.filename, e.lineno);
+});
+
+// ─── TEST BUTTON CLICK ────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded, setting up button listener');
+  const btn = document.getElementById('createBtn');
+  if (btn) {
+    console.log('Create button found:', btn);
+    btn.addEventListener('click', function(e) {
+      console.log('Button clicked via event listener!', e);
+    });
+  } else {
+    console.error('Create button NOT found!');
+  }
+});
+
+// ─── Tab Switching ────────────────────────────────────────────────────────────
+function showTab(tab) {
+  // Hide all panels
+  document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+  // Deactivate all nav items
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  // Show selected panel
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+
+  // Update header title
+  const titles = { 
+    orders: 'Manage Orders', 
+    dashboard: 'Dashboard', 
+    events: 'Create New Event',
+    'manage-events': 'Manage Events'
+  };
+  document.getElementById('pageTitle').textContent = titles[tab] || 'Admin Portal';
+
+  if (tab === 'orders') loadOrders('');
+  if (tab === 'dashboard') loadStats();
+  if (tab === 'manage-events') loadManageEvents();
+}
+
+// ─── Orders ──────────────────────────────────────────────────────────────────
+let currentFilter = '';
+
+function filterOrders(btn, status) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = status;
+  loadOrders(status);
+}
+
+async function loadOrders(statusFilter) {
+  const tbody = document.getElementById('ordersBody');
+  tbody.innerHTML = '<tr><td colspan="6" style="padding:32px;text-align:center;color:#888">Loading…</td></tr>';
+  try {
+    const orders = await API.getAdminOrders(statusFilter);
+
+    // Update badge
+    const needsApproval = orders.filter(o => o.status === 'payment_submitted' || o.status === 'pending_payment').length;
+    const badge = document.getElementById('pendingBadge');
+    if (needsApproval > 0) {
+      badge.textContent = needsApproval;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+
+    if (orders.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="padding:48px;text-align:center;color:#888;font-size:14px">No orders found.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = orders.map(o => {
+      const cryptoLabel = o.payment_method === 'cryptocurrency'
+        ? `<div><span class="crypto-label">${(o.crypto_currency || 'CRYPTO').replace('_', ' ')}</span></div>`
+        : '';
+      const txLine = o.tx_reference
+        ? `<div class="txref">Ref: ${o.tx_reference}</div>`
+        : (o.status === 'pending_payment' ? `<div class="no-txref">No TX submitted</div>` : '');
+
+      const statusClass = {
+        payment_submitted: 'submitted',
+        pending_payment: 'pending',
+        approved: 'approved',
+        rejected: 'rejected'
+      }[o.status] || 'pending';
+
+      const statusText = o.status.replace(/_/g, ' ').toUpperCase();
+
+      const canApprove = o.status === 'payment_submitted' || o.status === 'pending_payment';
+      const actions = canApprove
+        ? `<button class="approve-btn" data-approve-id="${o.order_id}" onclick="approveOrder(${o.order_id}, this)">✓ Approve</button>
+           <button class="reject-btn" data-reject-id="${o.order_id}" onclick="rejectOrder(${o.order_id}, this)">✗ Reject</button>`
+        : `<span style="color:#bbb;font-size:13px">—</span>`;
+
+      return `<tr>
+        <td><strong>#${o.order_id}</strong></td>
+        <td>
+          <div style="font-weight:600">${o.name}</div>
+          <div style="font-size:12px;color:#888">${o.email}</div>
+        </td>
+        <td>
+          <div style="font-weight:500">${o.event}</div>
+          <div style="font-size:12px;color:#888">${o.quantity}× ${o.tier}</div>
+        </td>
+        <td>
+          <div style="font-weight:700;color:#6c2bd9">$${Number(o.total).toFixed(2)}</div>
+          ${cryptoLabel}
+          ${txLine}
+        </td>
+        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+        <td>${actions}</td>
+      </tr>`;
+    }).join('');
+
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:32px;text-align:center;color:#ef4444">Error: ${e.message}</td></tr>`;
+  }
+}
+
+async function approveOrder(id, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+  try {
+    await API.adminApprove(id);
+    loadOrders(currentFilter);
+  } catch (e) {
+    alert('Error: ' + e.message);
+    if (btn) { btn.disabled = false; btn.innerHTML = '✓ Approve'; }
+  }
+}
+
+async function rejectOrder(id, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+  try {
+    await API.adminReject(id);
+    loadOrders(currentFilter);
+  } catch (e) {
+    alert('Error: ' + e.message);
+    if (btn) { btn.disabled = false; btn.innerHTML = '✗ Reject'; }
+  }
+}
+
+// ─── Dashboard Stats ─────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const all = await API.getAdminOrders('');
+    document.getElementById('stat-total').textContent = all.length;
+    document.getElementById('stat-pending').textContent = all.filter(o => o.status === 'payment_submitted' || o.status === 'pending_payment').length;
+    document.getElementById('stat-approved').textContent = all.filter(o => o.status === 'approved').length;
+  } catch (e) {}
+}
+
+// ─── Image Upload Helpers ────────────────────────────────────────────────────
+let uploadedImageUrl = '';
+
+function previewImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('imagePreview').src = URL.createObjectURL(file);
+  document.getElementById('imageFileName').textContent = file.name;
+  document.getElementById('imagePreviewWrap').style.display = 'block';
+  document.getElementById('uploadArea').style.background = '#f0ebff';
+}
+
+function clearImage() {
+  document.getElementById('evImageInput').value = '';
+  document.getElementById('imagePreview').src = '';
+  document.getElementById('imagePreviewWrap').style.display = 'none';
+  document.getElementById('uploadArea').style.background = '#faf8ff';
+  uploadedImageUrl = '';
+}
+
+// ─── Popup Toast ──────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(title, msg) {
+  const t = document.getElementById('toastEl');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ─── Create Event ─────────────────────────────────────────────────────────────
+window.submitCreateEvent = async function() {
+  console.log('=== CREATE EVENT CALLED ===');
+  
+  const titleEl = document.getElementById('evTitle');
+  const venueEl = document.getElementById('evVenue');
+  const dateEl  = document.getElementById('evDate');
+  
+  if (!titleEl || !venueEl || !dateEl) {
+    alert('Error: Form elements not found. Please refresh the page.');
+    return;
+  }
+  
+  titleEl.classList.remove('error');
+  venueEl.classList.remove('error');
+  dateEl.classList.remove('error');
+
+  const title = titleEl.value.trim();
+  const venue = venueEl.value.trim();
+  const date  = dateEl.value;
+
+  console.log('Form values:', { title, venue, date });
+
+  if (!title || !venue || !date) { 
+    if(!title) titleEl.classList.add('error');
+    if(!venue) venueEl.classList.add('error');
+    if(!date)  dateEl.classList.add('error');
+    showToast('Missing Fields', 'Please fill in Title, Venue and Date to create an event.'); 
+    return; 
+  }
+
+  const btn = document.getElementById('createBtn');
+  btn.disabled = true; 
+  btn.textContent = 'Creating…';
+
+  try {
+    // 1. Upload image first if one was selected
+    let image_url = '';
+    const imageFile = document.getElementById('evImageInput').files[0];
+    if (imageFile) {
+      console.log('Uploading image:', imageFile.name);
+      btn.textContent = 'Uploading image…';
+      const formData = new FormData();
+      formData.append('image', imageFile);
+      const upRes = await fetch('http://localhost:5000/api/admin/upload', {
+        method: 'POST',
+        body: formData
+      });
+      if (upRes.ok) {
+        const upData = await upRes.json();
+        image_url = upData.image_url;
+        console.log('Image uploaded:', image_url);
+      } else {
+        console.error('Image upload failed:', upRes.status);
+      }
+      btn.textContent = 'Creating event…';
+    }
+
+    // 2. Create the event with image_url
+    console.log('Creating event...');
+    const result = await API.createEvent({
+      title,
+      category: document.getElementById('evCategory').value,
+      description: document.getElementById('evDesc').value,
+      date,
+      time: document.getElementById('evTime').value,
+      venue,
+      image_url,
+      tiers: [{
+        name: document.getElementById('evTierName').value || 'General Admission',
+        price: parseFloat(document.getElementById('evTierPrice').value) || 50,
+        quantity: parseInt(document.getElementById('evTierQty').value) || 200
+      }]
+    });
+    
+    console.log('Event created:', result);
+    alert(`✅ Event "${title}" created successfully!`);
+    
+    // Clear form
+    document.getElementById('evTitle').value = '';
+    document.getElementById('evVenue').value = '';
+    document.getElementById('evDate').value = '';
+    document.getElementById('evTime').value = '';
+    document.getElementById('evDesc').value = '';
+    document.getElementById('evTierName').value = 'General Admission';
+    document.getElementById('evTierPrice').value = '50';
+    document.getElementById('evTierQty').value = '200';
+    clearImage();
+    
+    showTab('manage-events');
+  } catch (err) {
+    console.error('Create event error:', err);
+    alert('Failed: ' + err.message);
+  } finally {
+    btn.disabled = false; 
+    btn.textContent = 'Create Event';
+  }
+}
+
+// ─── Manage Events ────────────────────────────────────────────────────────────
+async function loadManageEvents() {
+  const tbody = document.getElementById('eventsBody');
+  tbody.innerHTML = '<tr><td colspan="7" style="padding:32px;text-align:center;color:#888">Loading…</td></tr>';
+  
+  try {
+    const events = await API.getAdminEvents();
+    
+    if (events.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="padding:48px;text-align:center;color:#888;font-size:14px">No events found. Create your first event!</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = events.map(e => {
+      const tierCount = e.tiers ? e.tiers.length : 0;
+      const totalSeats = e.tiers ? e.tiers.reduce((sum, t) => sum + t.quantity, 0) : 0;
+      
+      return `<tr>
+        <td><strong>#${e.id}</strong></td>
+        <td>
+          <div style="font-weight:600">${e.title}</div>
+          ${e.image_url ? '<div style="font-size:11px;color:#888">📷 Has image</div>' : ''}
+        </td>
+        <td><span style="font-size:12px;font-weight:600;color:#6c2bd9;text-transform:uppercase">${e.category}</span></td>
+        <td>
+          <div style="font-size:13px">${e.date}</div>
+          ${e.time ? '<div style="font-size:11px;color:#888">' + e.time + '</div>' : ''}
+        </td>
+        <td style="font-size:13px">${e.venue}</td>
+        <td>
+          <div style="font-size:13px;font-weight:600">${tierCount} tier${tierCount !== 1 ? 's' : ''}</div>
+          <div style="font-size:11px;color:#888">${totalSeats} total seats</div>
+        </td>
+        <td>
+          <button class="reject-btn" onclick="deleteEventConfirm(${e.id}, '${e.title.replace(/'/g, "\\'")}')">🗑 Delete</button>
+        </td>
+      </tr>`;
+    }).join('');
+    
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="7" style="padding:32px;text-align:center;color:#ef4444">Error: ${e.message}</td></tr>`;
+  }
+}
+
+async function deleteEventConfirm(eventId, eventTitle) {
+  if (!confirm(`Are you sure you want to delete "${eventTitle}"?\n\nThis action cannot be undone.`)) {
+    return;
+  }
+  
+  try {
+    await API.deleteEvent(eventId);
+    alert(`✅ Event "${eventTitle}" deleted successfully!`);
+    loadManageEvents();
+  } catch (e) {
+    alert(`❌ Failed to delete event: ${e.message}`);
+  }
+}
+
+// ─── Boot: default to Orders tab ─────────────────────────────────────────────
+showTab('orders');
+</script>
+</body>
+</html>
