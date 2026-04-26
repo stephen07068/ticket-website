@@ -59,3 +59,23 @@ event_*.webp
 *.tmp
 *.bak
 *.cache
+
+# Documentation files (not needed for deployment)
+README.md
+QUICK_START.md
+DATA_FLOW.md
+DATABASE_INFO.md
+DATABASE_QUICK_REFERENCE.md
+SUPABASE_SETUP.md
+SUPABASE_INTEGRATION_SUMMARY.md
+DEPLOYMENT.md
+DEPLOYMENT_SUMMARY.md
+GITHUB_DEPLOY_STEPS.md
+DEPLOY_INSTRUCTIONS.md
+GITHUB_DESKTOP_GUIDE.md
+BUG_FIXES.md
+TROUBLESHOOTING.md
+
+# Scripts not needed for deployment
+deploy-to-github.bat
+start.bat
