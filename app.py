@@ -135,6 +135,10 @@ def serve_admin_dashboard():
 def serve_events():
     return send_from_directory(basedir, 'index.html')
 
+@app.route('/event')
+def serve_event():
+    return send_from_directory(basedir, 'event.html')
+
 @app.route('/checkout')
 def serve_checkout():
     return send_from_directory(basedir, 'checkout.html')
