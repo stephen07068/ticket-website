@@ -74,6 +74,17 @@ footer{border-top:1px solid #f0f0f0;padding:32px 40px;display:flex;justify-conte
 .toast-msg{font-size:13px;color:#666;line-height:1.5;}
 .form-group input.error{border-color:#ef4444 !important;background:#fff8f8 !important;animation:shake .4s ease;}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 900px) {
+  .page-wrapper { grid-template-columns: 1fr; gap: 32px; padding: 24px 16px 60px; }
+  .order-sidebar { order: -1; position: static; }
+  .payment-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  nav { padding: 0 20px; }
+  footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .footer-links { flex-wrap: wrap; }
+}
 </style>
 </head>
 <body>
