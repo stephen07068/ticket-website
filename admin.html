@@ -287,10 +287,21 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
     <div class="form-card">
       <h3>Event Banner Image</h3>
       <p style="font-size:13px;color:#888;margin-bottom:16px">This image will appear on the event listing, checkout page, and ticket receipt.</p>
-      <label for="evImageInput" id="uploadArea" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:2px dashed #d0c4f7;border-radius:12px;padding:40px 20px;cursor:pointer;background:#faf8ff;transition:background .2s;">
+
+      <!-- Option A: Paste an external image URL (recommended for Railway - images won't be lost on redeploy) -->
+      <div class="form-group" style="margin-bottom:12px">
+        <label>📎 Image URL (Recommended)</label>
+        <input class="form-input" id="evImageUrl" placeholder="https://example.com/your-event-image.jpg" oninput="previewFromUrl(this.value)"/>
+        <div style="font-size:11px;color:#888;margin-top:4px">💡 Paste any public image URL (Imgur, Google Drive, Unsplash, etc.). Images uploaded via file will be lost when the server restarts.</div>
+      </div>
+
+      <div style="text-align:center;font-size:12px;color:#aaa;margin:12px 0;">— OR upload a file (local/testing only) —</div>
+
+      <!-- Option B: File upload -->
+      <label for="evImageInput" id="uploadArea" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:2px dashed #d0c4f7;border-radius:12px;padding:32px 20px;cursor:pointer;background:#faf8ff;transition:background .2s;">
         <div style="width:52px;height:52px;background:#f0ebff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;">🖼️</div>
         <div>
-          <div style="font-size:15px;font-weight:600;color:#6c2bd9;text-align:center">Click to Upload Banner Image</div>
+          <div style="font-size:14px;font-weight:600;color:#6c2bd9;text-align:center">Click to Upload Banner Image</div>
           <div style="font-size:12px;color:#999;text-align:center;margin-top:4px">JPG, PNG, GIF, WEBP • Max 10MB</div>
         </div>
         <input type="file" id="evImageInput" accept="image/*" style="display:none" onchange="previewImage(this)"/>
@@ -495,10 +506,20 @@ let uploadedImageUrl = '';
 function previewImage(input) {
   const file = input.files[0];
   if (!file) return;
+  // Clear URL field when file is chosen
+  document.getElementById('evImageUrl').value = '';
   document.getElementById('imagePreview').src = URL.createObjectURL(file);
   document.getElementById('imageFileName').textContent = file.name;
   document.getElementById('imagePreviewWrap').style.display = 'block';
   document.getElementById('uploadArea').style.background = '#f0ebff';
+}
+
+function previewFromUrl(url) {
+  if (!url) return;
+  // Clear file input when URL is typed
+  document.getElementById('evImageInput').value = '';
+  document.getElementById('imagePreviewWrap').style.display = 'none';
+  uploadedImageUrl = '';
 }
 
 function clearImage() {
@@ -556,15 +577,20 @@ window.submitCreateEvent = async function() {
   btn.textContent = 'Creating…';
 
   try {
-    // 1. Upload image first if one was selected
+    // 1. Get image URL - prefer URL field, then try file upload
     let image_url = '';
+    const urlInput = document.getElementById('evImageUrl').value.trim();
     const imageFile = document.getElementById('evImageInput').files[0];
-    if (imageFile) {
+
+    if (urlInput) {
+      // Use the pasted URL directly (preferred - persists across redeploys)
+      image_url = urlInput;
+    } else if (imageFile) {
       console.log('Uploading image:', imageFile.name);
       btn.textContent = 'Uploading image…';
       const formData = new FormData();
       formData.append('image', imageFile);
-      const upRes = await fetch('http://localhost:5000/api/admin/upload', {
+      const upRes = await fetch('/api/admin/upload', {
         method: 'POST',
         body: formData
       });
@@ -573,7 +599,7 @@ window.submitCreateEvent = async function() {
         image_url = upData.image_url;
         console.log('Image uploaded:', image_url);
       } else {
-        console.error('Image upload failed:', upRes.status);
+        console.warn('Image upload failed, proceeding without image.');
       }
       btn.textContent = 'Creating event…';
     }
@@ -607,6 +633,7 @@ window.submitCreateEvent = async function() {
     document.getElementById('evTierName').value = 'General Admission';
     document.getElementById('evTierPrice').value = '50';
     document.getElementById('evTierQty').value = '200';
+    document.getElementById('evImageUrl').value = '';
     clearImage();
     
     showTab('manage-events');

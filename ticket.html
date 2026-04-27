@@ -165,7 +165,7 @@ async function loadTicket() {
     // Set event banner image if available
     if (data.image_url) {
       const hero = document.getElementById('ticketHero');
-      const imageUrl = data.image_url.startsWith('http') ? data.image_url : `http://localhost:5000/${data.image_url}`;
+      const imageUrl = data.image_url.startsWith('http') ? data.image_url : `/${data.image_url}`;
       hero.style.backgroundImage = `url('${imageUrl}')`;
       hero.style.backgroundSize = 'cover';
       hero.style.backgroundPosition = 'center';
