@@ -21,28 +21,24 @@ CORS(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# ── DATABASE CONFIG (Supabase PostgreSQL Support) ─────────────────────────────
-# Get database URL from environment variable (for Supabase) or use SQLite as fallback
+# ── DATABASE CONFIG (PostgreSQL Only) ─────────────────────────────
+# Get database URL from environment variable
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-logger.info(f"Environment: {'Production' if DATABASE_URL else 'Development'}")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is required. Please set it to your PostgreSQL database URL.")
 
-if DATABASE_URL:
-    # Production: Use PostgreSQL
-    logger.info("Using PostgreSQL database")
-    # Fix for Supabase/Heroku postgres URL format
-    if DATABASE_URL.startswith('postgres://'):
-        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
-        logger.info("Fixed postgres:// to postgresql://")
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        'pool_pre_ping': True,
-        'pool_recycle': 300,
-    }
-else:
-    # Local development: Use SQLite
-    logger.info("Using SQLite database (local development)")
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'tickethub.db')
+logger.info("Using PostgreSQL database")
+# Fix for Supabase/Heroku postgres URL format
+if DATABASE_URL.startswith('postgres://'):
+    DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+    logger.info("Fixed postgres:// to postgresql://")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+}
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tickethub-secret-2024')
