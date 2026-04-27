@@ -268,7 +268,7 @@ function proceedToCheckout(){
     date:     currentEvent && currentEvent.date ? currentEvent.date    : 'TBD',
     time:     currentEvent && currentEvent.time ? currentEvent.time    : 'TBD',
     venue:    currentEvent && currentEvent.venue ? currentEvent.venue   : 'TBD',
-    image:    currentEvent && currentEvent.image_url ? currentEvent.image_url   : '',
+    image:    currentEvent && currentEvent.image ? currentEvent.image   : '',
   };
   localStorage.setItem('checkout_data', JSON.stringify(data));
   window.location.href = 'checkout.html';
@@ -287,8 +287,8 @@ async function loadEvent(){
       document.getElementById('event-date').textContent  = e.date  || 'TBA';
       document.getElementById('event-time').textContent  = e.time  || 'TBA';
       document.getElementById('event-venue').textContent = e.venue || 'TBA';
-      if(e.image_url) {
-        const imageUrl = e.image_url.startsWith('http') ? e.image_url : `/${e.image_url}`;
+      if(e.image) {
+        const imageUrl = e.image.startsWith('http') ? e.image : `/${e.image}`;
         document.getElementById('hero-img').src = imageUrl;
         document.getElementById('hero-img').onerror = function() {
           this.src = 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80';
