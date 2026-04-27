@@ -217,7 +217,7 @@ if (checkout_data.title) {
   // Set event image if available
   if (checkout_data.image) {
     const hero = document.getElementById('co-hero');
-    const imageUrl = checkout_data.image.startsWith('http') ? checkout_data.image : `http://localhost:5000/${checkout_data.image}`;
+    const imageUrl = checkout_data.image.startsWith('http') ? checkout_data.image : `/${checkout_data.image}`;
     hero.style.backgroundImage = `url('${imageUrl}')`;
     hero.style.backgroundSize = 'cover';
     hero.style.backgroundPosition = 'center';
