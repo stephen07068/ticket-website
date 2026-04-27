@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+tickethub.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# Uploaded files (keep structure but ignore actual uploads)
+uploads/*
+!uploads/.gitkeep
+event_*.jpg
+event_*.png
+event_*.gif
+event_*.webp
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+
+# Unneeded assets, docs, and scripts
+*.md
+*.bat
+unnamed*.png
+*.jpg
+*.png

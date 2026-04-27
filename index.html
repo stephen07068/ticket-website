@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TicketHubLive - Discover & Book Event Tickets</title>
+<meta name="description" content="TicketHubLive - No hidden fees, instant digital delivery. Book tickets for concerts, sports, theater, festivals and more."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#fff;color:#111;}
+a{text-decoration:none;color:inherit;}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;border-bottom:1px solid #f0f0f0;position:sticky;top:0;background:#fff;z-index:100;}
+.nav-logo{font-size:18px;font-weight:700;color:#7C3AED;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{font-size:14px;font-weight:500;color:#555;}
+.nav-links a.active{color:#7C3AED;border-bottom:2px solid #7C3AED;padding-bottom:2px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.search-bar{display:flex;align-items:center;gap:8px;border:1px solid #e5e5e5;border-radius:20px;padding:6px 14px;font-size:13px;color:#999;background:#fafafa;cursor:pointer;}
+.search-bar svg{width:14px;height:14px;opacity:0.5;}
+.cart-btn{background:none;border:none;cursor:pointer;padding:4px;}
+.cart-btn svg{width:22px;height:22px;color:#333;}
+
+/* HERO */
+.hero{margin:20px 24px;border-radius:16px;overflow:hidden;position:relative;min-height:300px;background:linear-gradient(135deg,#1a0533 0%,#2d1060 50%,#1a0533 100%);}
+.hero-img{width:100%;height:320px;object-fit:cover;opacity:0.45;}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:32px;}
+.hero-tag{display:inline-block;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:14px;}
+.hero-title{color:#fff;font-size:26px;font-weight:700;margin-bottom:8px;line-height:1.3;}
+.hero-desc{color:rgba(255,255,255,0.75);font-size:14px;margin-bottom:20px;max-width:420px;line-height:1.6;}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;background:#7C3AED;color:#fff;font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px;border:none;cursor:pointer;transition:background 0.2s;}
+.hero-cta:hover{background:#6d28d9;}
+.hero-cta svg{width:16px;height:16px;}
+
+/* CATEGORIES */
+.categories{padding:28px 24px 8px;}
+.category-chips{display:flex;gap:10px;flex-wrap:wrap;}
+.chip{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid #e0e0e0;background:#fff;color:#555;transition:all 0.2s;}
+.chip.active{background:#7C3AED;color:#fff;border-color:#7C3AED;}
+.chip:hover:not(.active){border-color:#7C3AED;color:#7C3AED;}
+
+/* TRENDING */
+.section{padding:24px 24px;}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.section-title{font-size:18px;font-weight:700;color:#111;}
+.view-all{font-size:13px;font-weight:600;color:#7C3AED;display:flex;align-items:center;gap:4px;}
+.view-all svg{width:14px;height:14px;}
+
+/* EVENT CARDS */
+.events-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:900px){.events-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.events-grid{grid-template-columns:1fr;} .nav-links{display:none;}}
+
+.event-card{border:1px solid #f0f0f0;border-radius:14px;overflow:hidden;background:#fff;transition:transform 0.2s,box-shadow 0.2s;}
+.event-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(124,58,237,0.1);}
+.card-img-wrap{position:relative;height:180px;overflow:hidden;}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
+.event-card:hover .card-img-wrap img{transform:scale(1.05);}
+.price-badge{position:absolute;top:12px;right:12px;background:#7C3AED;color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;}
+.card-body{padding:16px;}
+.card-date{display:flex;align-items:center;gap:5px;font-size:12px;color:#888;margin-bottom:6px;}
+.card-date svg{width:12px;height:12px;}
+.card-title{font-size:15px;font-weight:700;color:#111;margin-bottom:6px;line-height:1.3;}
+.card-venue{display:flex;align-items:center;gap:5px;font-size:12px;color:#666;margin-bottom:14px;}
+.card-venue svg{width:12px;height:12px;color:#7C3AED;}
+.buy-btn{width:100%;padding:10px;border-radius:8px;border:1.5px solid #e8e0ff;background:#faf7ff;color:#7C3AED;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;}
+.buy-btn:hover{background:#7C3AED;color:#fff;border-color:#7C3AED;}
+.buy-btn svg{width:14px;height:14px;}
+
+/* PROMO */
+.promo{margin:8px 24px 40px;background:#f3f0ff;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:40px 48px;gap:32px;overflow:hidden;}
+.promo-text h2{font-size:22px;font-weight:700;color:#111;margin-bottom:10px;}
+.promo-text p{font-size:14px;color:#666;max-width:360px;line-height:1.6;margin-bottom:20px;}
+.promo-badges{display:flex;gap:20px;}
+.promo-badge{display:flex;align-items:center;gap:10px;}
+.badge-icon{width:36px;height:36px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;}
+.badge-icon svg{width:18px;height:18px;color:#fff;}
+.badge-label{font-size:13px;font-weight:700;color:#111;}
+.badge-sub{font-size:11px;color:#888;}
+.promo-img{width:200px;flex-shrink:0;}
+.promo-img img{width:100%;border-radius:12px;}
+
+/* FOOTER */
+footer{background:#fff;border-top:1px solid #f0f0f0;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:16px;}
+.footer-logo{font-size:16px;font-weight:700;color:#7C3AED;}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;}
+.footer-links a{font-size:13px;color:#888;}
+.footer-links a:hover{color:#7C3AED;}
+.footer-copy{font-size:12px;color:#aaa;}
+.footer-bottom{width:100%;display:flex;justify-content:space-between;align-items:center;}
+.footer-icons{display:flex;gap:12px;}
+.footer-icon{width:32px;height:32px;border-radius:50%;border:1px solid #e5e5e5;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.footer-icon svg{width:16px;height:16px;color:#666;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">TicketHubLive</div>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Events</a></li>
+    <li><a href="#">Venues</a></li>
+    <li><a href="#">Sports</a></li>
+    <li><a href="#">Concerts</a></li>
+    <li><a href="#">My Tickets</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Search events...
+    </div>
+    <button class="cart-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <img class="hero-img" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80" alt="Featured Event"/>
+  <div class="hero-content">
+    <div class="hero-tag">Featuring: Neon Eclipse Tour</div>
+    <h1 class="hero-title">Experience the Pulse of Modern Sound.</h1>
+    <p class="hero-desc">Join the world's most anticipated electronic music journey of the year. Limited tickets available for the final leg.</p>
+    <a href="event.html" class="hero-cta">
+      Buy Tickets
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="categories">
+  <div class="category-chips">
+    <div class="chip active" onclick="filterCategory(this,'all')">All Categories</div>
+    <div class="chip" onclick="filterCategory(this,'concert')">Concerts</div>
+    <div class="chip" onclick="filterCategory(this,'sports')">Basketball</div>
+    <div class="chip" onclick="filterCategory(this,'theater')">Theater</div>
+    <div class="chip" onclick="filterCategory(this,'festival')">Festivals</div>
+    <div class="chip" onclick="filterCategory(this,'family')">Family</div>
+  </div>
+</div>
+
+<!-- TRENDING EVENTS -->
+<div class="section">
+  <div class="section-header">
+    <h2 class="section-title">Trending Events</h2>
+    <a href="#" class="view-all">
+      View all
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="events-grid" id="events-grid">
+    <!-- Loaded by JS -->
+  </div>
+</div>
+
+<!-- PROMO SECTION -->
+<div class="promo">
+  <div class="promo-text">
+    <h2>The Smartest Way to Secure Your Spot.</h2>
+    <p>No hidden fees, instant digital delivery, and a verified secondary marketplace. Experience events with peace of mind.</p>
+    <div class="promo-badges">
+      <div class="promo-badge">
+        <div class="badge-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <div class="badge-label">Verified</div>
+          <div class="badge-sub">100% Guaranteed</div>
+        </div>
+      </div>
+      <div class="promo-badge">
+        <div class="badge-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div>
+          <div class="badge-label">Instant</div>
+          <div class="badge-sub">Mobile delivery</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="promo-img">
+    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=400&q=80" alt="Mobile App"/>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">TicketHubLive</div>
+  <div class="footer-links">
+    <a href="#">About Us</a>
+    <a href="#">Support</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Press</a>
+  </div>
+  <div style="width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <span class="footer-copy">© 2024 TicketHubLive. All rights reserved.</span>
+    <div style="display:flex;align-items:center;gap:20px;font-size:13px;color:#666;">
+      <a href="https://wa.me/14782338453" target="_blank" style="display:flex;align-items:center;gap:6px;color:#25D366;text-decoration:none;font-weight:500;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        +1 (478) 233-8453
+      </a>
+      <a href="mailto:tickethublive@gmail.com" style="display:flex;align-items:center;gap:6px;color:#666;text-decoration:none;font-weight:500;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        tickethublive@gmail.com
+      </a>
+    </div>
+    <div class="footer-icons">
+      <div class="footer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <div class="footer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+    </div>
+  </div>
+</footer>
+
+<script src="lib/api.js"></script>
+<script>
+const DEMO_EVENTS = [
+  {id:1, title:"Summer Skyline Series", venue:"Rooftop Plaza, New York", date:"AUG 15, 2024", ticket_price:89, category:"concert", image:"https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=600&q=80"},
+  {id:2, title:"Championship Finals", venue:"Grand Arena, Chicago", date:"SEPT 02, 2024", ticket_price:120, category:"sports", image:"https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80"},
+  {id:3, title:"Indie Folk Garden", venue:"Botanical Gardens, Austin", date:"OCT 12, 2024", ticket_price:45, category:"festival", image:"https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=600&q=80"},
+];
+
+function renderEvents(events){
+  const grid = document.getElementById('events-grid');
+  grid.innerHTML = events.map(e => {
+    const imageUrl = e.image && !e.image.startsWith('http') ? `http://localhost:5000/${e.image}` : (e.image || 'https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=600&q=80');
+    return `
+    <div class="event-card">
+      <div class="card-img-wrap">
+        <img src="${imageUrl}" alt="${e.title}" onerror="this.src='https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=600&q=80'"/>
+        <span class="price-badge">$${e.ticket_price}+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-date">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          ${e.date}
+        </div>
+        <div class="card-title">${e.title}</div>
+        <div class="card-venue">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          ${e.venue}
+        </div>
+        <a href="event.html?id=${e.id}" class="buy-btn">
+          Buy Ticket
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </a>
+      </div>
+    </div>
+  `;
+  }).join('');
+}
+
+function filterCategory(el, cat){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const category = cat === 'all' ? '' : cat;
+  loadEvents(category);
+}
+
+async function loadEvents(category = ''){
+  try {
+    const data = await API.getEvents(category);
+    if(data && data.length) renderEvents(data);
+    else renderEvents(DEMO_EVENTS);
+  } catch(e){ renderEvents(DEMO_EVENTS); }
+}
+
+loadEvents();
+</script>
+</body>
+</html>

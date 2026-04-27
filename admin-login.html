@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Portal - TicketHubLive</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f2fb;color:#111;min-height:100vh;display:flex;flex-direction:column}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:56px;background:#fff;border-bottom:1px solid #eee}
+.nav-logo{font-size:18px;font-weight:700;color:#111;text-decoration:none}
+.back-link{font-size:14px;color:#555;text-decoration:none;display:flex;align-items:center;gap:6px}
+.back-link:hover{color:#111}
+
+.page-center{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.login-card{background:#fff;border-radius:20px;padding:44px 40px;width:100%;max-width:420px;text-align:center;box-shadow:0 4px 32px rgba(0,0,0,.07)}
+
+.shield-icon{width:64px;height:64px;background:#ede8fc;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px}
+.login-title{font-size:26px;font-weight:700;margin-bottom:10px}
+.login-sub{font-size:14px;color:#666;margin-bottom:32px;line-height:1.6}
+
+.form-group{text-align:left;margin-bottom:20px}
+.form-group label{display:block;font-size:11px;font-weight:700;color:#444;letter-spacing:.6px;margin-bottom:8px}
+.input-wrap{position:relative}
+.input-wrap input{width:100%;padding:13px 44px 13px 16px;border:1px solid #e5e5e5;border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;color:#111;background:#f9f9f9;outline:none;transition:border-color .2s,background .2s}
+.input-wrap input::placeholder{color:#aaa}
+.input-wrap input:focus{border-color:#6c2bd9;background:#fff}
+.input-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#bbb;font-size:16px}
+
+.label-row{display:flex;justify-content:space-between;align-items:center}
+.forgot-link{font-size:12px;color:#6c2bd9;text-decoration:none;font-weight:500}
+.forgot-link:hover{text-decoration:underline}
+
+.btn-login{width:100%;padding:15px;background:#6c2bd9;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s;margin-top:8px}
+.btn-login:hover{background:#5a22b8}
+
+.security-badges{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.sec-badge{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#555;background:#f4f2fb;padding:6px 14px;border-radius:20px}
+
+.contact-line{font-size:13px;color:#666;margin-top:28px}
+.contact-line a{color:#6c2bd9;font-weight:500;text-decoration:none}
+.contact-line a:hover{text-decoration:underline}
+
+footer{border-top:1px solid #e5e5e5;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:#fff}
+.footer-logo{font-size:16px;font-weight:700;color:#111}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:13px;color:#666;text-decoration:none}
+.footer-links a:hover{color:#6c2bd9}
+.footer-copy{font-size:13px;color:#999}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">TicketHubLive</a>
+  <a href="index.html" class="back-link">← Back to Website</a>
+</nav>
+
+<div class="page-center">
+  <div class="login-card">
+    <div class="shield-icon">🛡</div>
+    <h1 class="login-title">Admin Portal</h1>
+    <p class="login-sub">Authorized access only. Enter your credentials to continue.</p>
+
+    <div class="form-group">
+      <label for="adminEmail">EMAIL ADDRESS</label>
+      <div class="input-wrap">
+        <input type="email" id="adminEmail" placeholder="admin@tickethublive.com"/>
+        <span class="input-icon">@</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="label-row">
+        <label for="adminPass">PASSWORD</label>
+        <a href="#" class="forgot-link">Forgot Password?</a>
+      </div>
+      <div class="input-wrap">
+        <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password"/>
+        <span class="input-icon">🔒</span>
+      </div>
+    </div>
+
+    <button class="btn-login" id="loginBtn" onclick="adminLogin()">
+      Secure Login 🛡
+    </button>
+
+    <div class="security-badges">
+      <div class="sec-badge">🔒 256-bit AES</div>
+      <div class="sec-badge">🛡 IP Restricted</div>
+    </div>
+
+    <div class="contact-line">Don't have access? <a href="#">Contact System Admin</a></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">TicketHubLive</div>
+  <div class="footer-links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Security Audit</a>
+  </div>
+  <div class="footer-copy">© 2024 TicketHubLive Admin Portal. Secured by Enterprise Encryption.</div>
+</footer>
+
+<script src="lib/api.js"></script>
+<script>
+async function adminLogin(){
+  const email = document.getElementById('adminEmail').value.trim();
+  const pass  = document.getElementById('adminPass').value.trim();
+  if(!email || !pass){ alert('Please enter your email and password.'); return; }
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.textContent = 'Authenticating…';
+
+  try {
+    const result = await API.adminLogin(email, pass);
+    sessionStorage.setItem('adminLoggedIn', 'true');
+    sessionStorage.setItem('adminToken', result.token || '');
+    window.location.href = 'admin.html';
+  } catch(err){
+    alert('Login failed: ' + err.message);
+    btn.disabled = false;
+    btn.innerHTML = 'Secure Login 🛡';
+  }
+}
+// Allow Enter key
+document.addEventListener('keydown', e => { if(e.key === 'Enter') adminLogin(); });
+</script>
+</body>
+</html>

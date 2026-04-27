@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Event Details - TicketHubLive</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f9f9fb;color:#111;}
+a{text-decoration:none;color:inherit;}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;border-bottom:1px solid #f0f0f0;position:sticky;top:0;background:#fff;z-index:100;}
+.nav-logo{font-size:18px;font-weight:700;color:#7C3AED;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{font-size:14px;font-weight:500;color:#555;}
+.nav-links a.active{color:#7C3AED;border-bottom:2px solid #7C3AED;padding-bottom:2px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.search-bar{display:flex;align-items:center;gap:8px;border:1px solid #e5e5e5;border-radius:20px;padding:6px 14px;font-size:13px;color:#999;background:#fafafa;}
+.search-bar svg{width:14px;height:14px;opacity:0.5;}
+.cart-btn{background:none;border:none;cursor:pointer;padding:4px;}
+.cart-btn svg{width:22px;height:22px;color:#333;}
+
+/* HERO */
+.event-hero{position:relative;width:100%;height:340px;overflow:hidden;}
+.event-hero img{width:100%;height:100%;object-fit:cover;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.65) 100%);}
+.hero-badges{position:absolute;bottom:32px;left:32px;display:flex;gap:10px;}
+.badge{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+.badge-dark{background:rgba(0,0,0,0.7);color:#fff;}
+.badge-light{background:rgba(255,255,255,0.85);color:#111;}
+.event-hero-title{position:absolute;bottom:72px;left:32px;right:32px;}
+.event-hero-title h1{color:#fff;font-size:32px;font-weight:800;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,0.4);}
+
+/* LAYOUT */
+.content{max-width:1100px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start;}
+@media(max-width:800px){.content{grid-template-columns:1fr;}.sidebar{order:-1;} .nav-links{display:none;}}
+
+/* INFO CHIPS */
+.info-chips{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
+.info-chip{display:flex;align-items:center;gap:12px;border:1px solid #e5e5e5;border-radius:10px;padding:12px 18px;background:#fff;}
+.chip-icon{width:36px;height:36px;border-radius:8px;background:#f3f0ff;display:flex;align-items:center;justify-content:center;}
+.chip-icon svg{width:18px;height:18px;color:#7C3AED;}
+.chip-label{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+.chip-value{font-size:14px;font-weight:700;color:#111;}
+
+/* ABOUT */
+.about h2{font-size:22px;font-weight:700;margin-bottom:16px;}
+.about p{font-size:14px;color:#555;line-height:1.8;margin-bottom:14px;}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+.feature-card{border:1px solid #e5e5e5;border-radius:12px;padding:20px;background:#fff;}
+.feature-icon{width:32px;height:32px;background:#f3f0ff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.feature-icon svg{width:18px;height:18px;color:#7C3AED;}
+.feature-card h3{font-size:15px;font-weight:700;margin-bottom:6px;}
+.feature-card p{font-size:13px;color:#666;line-height:1.6;}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:80px;}
+.ticket-box{background:#fff;border:1px solid #e5e5e5;border-radius:16px;overflow:hidden;}
+.ticket-box-header{background:#7C3AED;padding:18px 20px;}
+.ticket-box-header h3{color:#fff;font-size:17px;font-weight:700;}
+.ticket-box-header p{color:rgba(255,255,255,0.75);font-size:13px;margin-top:2px;}
+.ticket-box-body{padding:20px;}
+
+.tier-option{border:2px solid #e5e5e5;border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;}
+.tier-option.selected{border-color:#7C3AED;background:#faf7ff;}
+.tier-option-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.tier-name{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#888;}
+.tier-price{font-size:20px;font-weight:800;color:#7C3AED;}
+.tier-desc{font-size:12px;color:#666;margin-top:4px;}
+
+.qty-section{margin:16px 0;}
+.qty-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:10px;}
+.qty-control{display:flex;align-items:center;gap:16px;}
+.qty-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid #e5e5e5;background:#fff;font-size:18px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.qty-btn:hover{border-color:#7C3AED;color:#7C3AED;}
+.qty-val{font-size:18px;font-weight:700;min-width:24px;text-align:center;}
+
+.price-breakdown{border-top:1px solid #f0f0f0;padding-top:14px;margin-top:14px;}
+.price-row{display:flex;justify-content:space-between;font-size:13px;color:#666;margin-bottom:8px;}
+.price-total{display:flex;justify-content:space-between;font-size:17px;font-weight:800;color:#111;margin-top:10px;padding-top:10px;border-top:2px solid #f0f0f0;}
+.price-total .total-amount{color:#7C3AED;}
+
+.buy-btn{width:100%;margin-top:16px;padding:14px;border-radius:10px;background:#7C3AED;color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;}
+.buy-btn:hover{background:#6d28d9;}
+.buy-btn svg{width:18px;height:18px;}
+
+.early-bird{margin-top:16px;border:1.5px solid #e8e0ff;border-radius:12px;padding:14px 16px;background:#faf7ff;}
+.eb-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.eb-label{font-size:12px;font-weight:700;color:#7C3AED;display:flex;align-items:center;gap:6px;}
+.eb-icon{width:28px;height:28px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#7C3AED;}
+.eb-text{font-size:12px;color:#555;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">TicketHubLive</div>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Events</a></li>
+    <li><a href="#">Venues</a></li>
+    <li><a href="#">Sports</a></li>
+    <li><a href="#">Concerts</a></li>
+    <li><a href="#">My Tickets</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Search events...
+    </div>
+    <button class="cart-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="event-hero" id="event-hero">
+  <img id="hero-img" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80" alt="Event"/>
+  <div class="hero-overlay"></div>
+  <div class="event-hero-title"><h1 id="event-title">Loading event...</h1></div>
+  <div class="hero-badges">
+    <span class="badge badge-dark" id="badge1">LIVE EVENT</span>
+    <span class="badge badge-light" id="badge2">CONCERT</span>
+  </div>
+</div>
+
+<div class="content">
+  <div class="main">
+    <div class="info-chips">
+      <div class="info-chip">
+        <div class="chip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div><div class="chip-label">Date</div><div class="chip-value" id="event-date">Oct 24, 2024</div></div>
+      </div>
+      <div class="info-chip">
+        <div class="chip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div><div class="chip-label">Time</div><div class="chip-value" id="event-time">08:00 PM</div></div>
+      </div>
+      <div class="info-chip">
+        <div class="chip-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+        <div><div class="chip-label">Location</div><div class="chip-value" id="event-venue">Crystal Arena, LA</div></div>
+      </div>
+    </div>
+
+    <div class="about">
+      <h2>About the Event</h2>
+      <p id="event-desc1">Experience the most anticipated audio-visual spectacle of the decade. Neon Horizon brings their signature fusion of synth-wave and orchestral arrangements to the Crystal Arena for a one-night-only performance.</p>
+      <p id="event-desc2">The tour features a state-of-the-art kinetic stage design, immersive 3D spatial audio, and guest appearances from world-renowned producers. Join us for a night where digital art meets human emotion under the neon glow.</p>
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Enhanced Security</h3>
+          <p>Contactless entry and dedicated security personnel throughout the venue for your safety.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+          <h3>Premium Dining</h3>
+          <p>Access to a curated selection of gourmet food stalls and exclusive beverage lounges.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="ticket-box">
+      <div class="ticket-box-header">
+        <h3>Select Tickets</h3>
+        <p>Reserved seating available</p>
+      </div>
+      <div class="ticket-box-body">
+        <div class="tier-option selected" onclick="selectTier(this,299,'VIP Experience')" id="tier-vip">
+          <div class="tier-option-top">
+            <div><div class="tier-name">VIP Experience</div><div class="tier-desc">Front row access, private lounge, &amp; gift bag</div></div>
+            <div class="tier-price">$299</div>
+          </div>
+        </div>
+        <div class="tier-option" onclick="selectTier(this,129,'Regular Admission')" id="tier-reg">
+          <div class="tier-option-top">
+            <div><div class="tier-name">Regular Admission</div><div class="tier-desc">Main floor and balcony seating options</div></div>
+            <div class="tier-price">$129</div>
+          </div>
+        </div>
+
+        <div class="qty-section">
+          <div class="qty-label">Quantity</div>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <span class="qty-val" id="qty">2</span>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+
+        <div class="price-breakdown">
+          <div class="price-row"><span id="subtotal-label">Subtotal (2 tickets)</span><span id="subtotal">$598.00</span></div>
+          <div class="price-row"><span>Processing Fee</span><span>$12.50</span></div>
+          <div class="price-total"><span>Total</span><span class="total-amount" id="total">$610.50</span></div>
+        </div>
+
+        <button class="buy-btn" onclick="proceedToCheckout()">
+          Buy Ticket
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+
+        <div class="early-bird">
+          <div class="eb-top">
+            <div class="eb-label">🏷 Early Bird Offer</div>
+            <div class="eb-icon">%</div>
+          </div>
+          <div class="eb-text">Save 15% when you buy 4 or more tickets. Use code: <strong>NEON15</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer style="background:#fff;border-top:1px solid #f0f0f0;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
+  <span style="font-size:15px;font-weight:700;color:#7C3AED;">TicketHubLive</span>
+  <span style="font-size:12px;color:#aaa;">© 2024 TicketHubLive. All rights reserved.</span>
+</footer>
+
+<script src="lib/api.js"></script>
+<script>
+let selectedPrice = 299;
+let selectedTier = 'VIP Experience';
+let selectedTierId = null;
+let currentEvent = null;
+let qty = 2;
+const SERVICE_FEE_PER = 12.25;
+const PROCESS_FEE_PER = 2.75;
+
+function selectTier(el, price, tier, tierId){
+  document.querySelectorAll('.tier-option').forEach(t=>t.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPrice = price;
+  selectedTier = tier;
+  selectedTierId = tierId || null;
+  updateTotal();
+}
+
+function changeQty(d){
+  qty = Math.max(1, qty + d);
+  document.getElementById('qty').textContent = qty;
+  updateTotal();
+}
+
+function updateTotal(){
+  const sub   = selectedPrice * qty;
+  const svc   = SERVICE_FEE_PER * qty;
+  const proc  = PROCESS_FEE_PER * qty;
+  const total = sub + svc + proc;
+  document.getElementById('subtotal-label').textContent = `Subtotal (${qty} ticket${qty>1?'s':''})`;
+  document.getElementById('subtotal').textContent       = `$${sub.toFixed(2)}`;
+  document.getElementById('total').textContent          = `$${total.toFixed(2)}`;
+}
+
+function proceedToCheckout(){
+  const params  = new URLSearchParams(window.location.search);
+  const eventId = params.get('id') || '1';
+  const data = {
+    eventId,
+    tierId:   selectedTierId,
+    tier:     selectedTier,
+    price:    selectedPrice,
+    qty,
+    total:    (selectedPrice * qty + SERVICE_FEE_PER * qty + PROCESS_FEE_PER * qty).toFixed(2),
+    title:    currentEvent ? currentEvent.title   : '',
+    category: currentEvent ? currentEvent.category : '',
+    date:     currentEvent ? currentEvent.date    : '',
+    time:     currentEvent ? currentEvent.time    : '',
+    venue:    currentEvent ? currentEvent.venue   : '',
+    image:    currentEvent ? currentEvent.image   : '',
+  };
+  localStorage.setItem('checkout_data', JSON.stringify(data));
+  window.location.href = 'checkout.html';
+}
+
+async function loadEvent(){
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if(!id) { updateTotal(); return; }
+  try {
+    const e = await API.getEvent(id);
+    currentEvent = e;
+    if(e && e.title){
+      document.title = e.title + ' – TicketHubLive';
+      document.getElementById('event-title').textContent = e.title;
+      document.getElementById('event-date').textContent  = e.date  || 'TBA';
+      document.getElementById('event-time').textContent  = e.time  || 'TBA';
+      document.getElementById('event-venue').textContent = e.venue || 'TBA';
+      if(e.image) {
+        const imageUrl = e.image.startsWith('http') ? e.image : `http://localhost:5000/${e.image}`;
+        document.getElementById('hero-img').src = imageUrl;
+        document.getElementById('hero-img').onerror = function() {
+          this.src = 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80';
+        };
+      }
+      document.getElementById('badge2').textContent = (e.category || 'EVENT').toUpperCase();
+      if(e.description){
+        document.getElementById('event-desc1').textContent = e.description;
+        document.getElementById('event-desc2').textContent = '';
+      }
+      // Build tier options dynamically
+      if(e.tiers && e.tiers.length){
+        const box = document.querySelector('.ticket-box-body');
+        // Remove static tier divs
+        box.querySelectorAll('.tier-option').forEach(t=>t.remove());
+        // Insert new tiers before .qty-section
+        const qtySection = box.querySelector('.qty-section');
+        e.tiers.forEach((t, i) => {
+          const div = document.createElement('div');
+          div.className = 'tier-option' + (i===0?' selected':'');
+          div.innerHTML = `
+            <div class="tier-option-top">
+              <div><div class="tier-name">${t.name}</div><div class="tier-desc">${t.available} seats available</div></div>
+              <div class="tier-price">$${t.price.toFixed(2)}</div>
+            </div>`;
+          div.onclick = () => selectTier(div, t.price, t.name, t.id);
+          box.insertBefore(div, qtySection);
+          if(i === 0){ selectedPrice = t.price; selectedTier = t.name; selectedTierId = t.id; }
+        });
+      }
+    }
+  } catch(err){ console.log('Using demo event data'); }
+  updateTotal();
+}
+
+document.title = 'Neon Horizon: Midnight Symphony Tour – TicketHubLive';
+loadEvent();
+</script>
+</body>
+</html>
