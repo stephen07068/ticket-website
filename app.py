@@ -391,12 +391,38 @@ def get_admin_events():
     return jsonify([e.to_dict(include_tiers=True) for e in events])
 
 # ── ENTRY ─────────────────────────────────────────────────────────────────────
+def fix_image_urls():
+    """Fix any events that still have local filenames instead of proper image URLs."""
+    IMAGE_MAP = {
+        'unnamed (20).png': 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=800&q=80',
+        'unnamed (21).png': 'https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=800&q=80',
+        'unnamed (22).png': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=80',
+        'unnamed (23).png': 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80',
+        'unnamed (24).png': 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80',
+        'unnamed (25).png': 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=800&q=80',
+    }
+    fixed = 0
+    events = Event.query.all()
+    for ev in events:
+        # Fix known local filenames
+        if ev.image_url in IMAGE_MAP:
+            ev.image_url = IMAGE_MAP[ev.image_url]
+            fixed += 1
+        # Fix any other local filenames (not starting with http)
+        elif ev.image_url and not ev.image_url.startswith('http'):
+            ev.image_url = 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=800&q=80'
+            fixed += 1
+    if fixed > 0:
+        db.session.commit()
+        logger.info(f"Fixed image URLs for {fixed} event(s)")
+
 def init_db():
     """Initialize database tables and seed data"""
     try:
         logger.info("Initializing database...")
         db.create_all()
         logger.info("Database tables created")
+        fix_image_urls()   # ← Fix broken local image filenames first
         seed_data()
         logger.info("Database initialized successfully")
     except Exception as e:
