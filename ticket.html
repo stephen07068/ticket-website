@@ -57,9 +57,9 @@ footer{border-top:1px solid #e5e5e5;padding:28px 40px;display:flex;justify-conte
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-logo">TicketHubLive</a>
+  <a href="/" class="nav-logo">TicketHubLive</a>
   <ul class="nav-links">
-    <li><a href="index.html">Events</a></li>
+    <li><a href="/">Events</a></li>
     <li><a href="#">Venues</a></li>
     <li><a href="#">Sports</a></li>
     <li><a href="#">Concerts</a></li>
@@ -117,7 +117,7 @@ footer{border-top:1px solid #e5e5e5;padding:28px 40px;display:flex;justify-conte
     <button class="btn-share" onclick="shareTicket()">⤴ Share Ticket</button>
   </div>
 
-  <a href="#" class="back-link">← Back to My Tickets</a>
+  <a href="/" class="back-link">← Back to My Tickets</a>
 </div>
 
 <footer>
@@ -155,7 +155,7 @@ async function loadTicket() {
     const data = await API.getTicket(orderId);
     if(data.status !== 'approved') {
       // Redirect back to pending if not approved
-      window.location.href = `pending.html?order=${orderId}`;
+      window.location.href = `/pending?order=${orderId}`;
       return;
     }
 

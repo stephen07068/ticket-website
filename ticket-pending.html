@@ -51,9 +51,9 @@ footer{border-top:1px solid #e5e5e5;padding:28px 40px;display:flex;justify-conte
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-logo">TicketHubLive</a>
+  <a href="/" class="nav-logo">TicketHubLive</a>
   <ul class="nav-links">
-    <li><a href="index.html">Events</a></li>
+    <li><a href="/">Events</a></li>
     <li><a href="#">Venues</a></li>
     <li><a href="#">Sports</a></li>
     <li><a href="#">Concerts</a></li>
@@ -136,7 +136,7 @@ footer{border-top:1px solid #e5e5e5;padding:28px 40px;display:flex;justify-conte
     </div>
   </div>
 
-  <a href="index.html" class="btn-home">← Browse More Events</a>
+  <a href="/" class="btn-home">← Browse More Events</a>
 </div>
 
 <footer>
@@ -167,7 +167,7 @@ const orderId = params.get('order');
 
 async function loadOrder() {
   if (!orderId) {
-    window.location.href = 'index.html';
+    window.location.href = '/';
     return;
   }
 

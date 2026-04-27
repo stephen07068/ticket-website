@@ -58,7 +58,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 40px
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-logo">TicketHubLive</a>
+  <a href="/" class="nav-logo">TicketHubLive</a>
 </nav>
 
 <div class="pending-page">
@@ -164,7 +164,7 @@ async function loadOrder(){
     }
     
     if(order.status === 'approved') {
-      window.location.href = `ticket-pending.html?order=${orderId}`;
+      window.location.href = `/ticket-pending?order=${orderId}`;
       return;
     }
     
@@ -306,7 +306,7 @@ setInterval(async () => {
     const order = await API.getOrder(orderId);
     if(order.status === 'approved') {
       // Redirect to ticket-pending page instead of ticket page
-      window.location.href = `ticket-pending.html?order=${orderId}`;
+      window.location.href = `/ticket-pending?order=${orderId}`;
     }
   } catch(e) {
     console.error('Polling error:', e);

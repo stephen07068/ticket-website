@@ -125,7 +125,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
-  <a href="index.html" class="sidebar-logo">
+  <a href="/" class="sidebar-logo">
     <div class="logo-icon">T</div>
     <div class="logo-text">
       <span class="logo-main">TicketHubLive</span>
@@ -150,7 +150,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
   </nav>
 
   <div class="sidebar-bottom">
-    <a href="admin-login.html" class="bottom-item">
+    <a href="/admin" class="bottom-item">
       <span class="nav-icon">🚪</span> Logout
     </a>
   </div>
@@ -342,7 +342,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 <script>
 // ─── Auth Guard ───────────────────────────────────────────────────────────────
 if (!sessionStorage.getItem('adminLoggedIn')) {
-  window.location.href = 'admin-login.html';
+  window.location.href = '/admin';
 }
 
 // ─── GLOBAL ERROR HANDLER ─────────────────────────────────────────────────────

@@ -101,7 +101,7 @@ footer{background:#fff;border-top:1px solid #f0f0f0;padding:32px 24px;display:fl
 <nav>
   <div class="nav-logo">TicketHubLive</div>
   <ul class="nav-links">
-    <li><a href="index.html" class="active">Events</a></li>
+    <li><a href="/" class="active">Events</a></li>
     <li><a href="#">Venues</a></li>
     <li><a href="#">Sports</a></li>
     <li><a href="#">Concerts</a></li>
@@ -125,7 +125,7 @@ footer{background:#fff;border-top:1px solid #f0f0f0;padding:32px 24px;display:fl
     <div class="hero-tag">Featuring: Neon Eclipse Tour</div>
     <h1 class="hero-title">Experience the Pulse of Modern Sound.</h1>
     <p class="hero-desc">Join the world's most anticipated electronic music journey of the year. Limited tickets available for the final leg.</p>
-    <a href="event.html" class="hero-cta">
+    <a href="/event" class="hero-cta">
       Buy Tickets
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
@@ -246,7 +246,7 @@ function renderEvents(events){
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
           ${e.venue}
         </div>
-        <a href="event.html?id=${e.id}" class="buy-btn">
+        <a href="/event?id=${e.id}" class="buy-btn">
           Buy Ticket
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </a>
