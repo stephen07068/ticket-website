@@ -229,7 +229,7 @@ const DEMO_EVENTS = [
 function renderEvents(events){
   const grid = document.getElementById('events-grid');
   grid.innerHTML = events.map(e => {
-    const imageUrl = e.image && !e.image.startsWith('http') ? `http://localhost:5000/${e.image}` : (e.image || 'https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=600&q=80');
+    const imageUrl = e.image && !e.image.startsWith('http') ? `/${e.image}` : (e.image || 'https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=600&q=80');
     return `
     <div class="event-card">
       <div class="card-img-wrap">
