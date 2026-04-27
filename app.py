@@ -122,6 +122,31 @@ def seed_data():
 def serve_index():
     return send_from_directory(basedir, 'index.html')
 
+# ── CLEAN URL SHORTCUTS (no .html needed) ─────────────────────────────────────
+@app.route('/admin')
+def serve_admin_login():
+    return send_from_directory(basedir, 'admin-login.html')
+
+@app.route('/admin/dashboard')
+def serve_admin_dashboard():
+    return send_from_directory(basedir, 'admin.html')
+
+@app.route('/events')
+def serve_events():
+    return send_from_directory(basedir, 'index.html')
+
+@app.route('/checkout')
+def serve_checkout():
+    return send_from_directory(basedir, 'checkout.html')
+
+@app.route('/pending')
+def serve_pending():
+    return send_from_directory(basedir, 'pending.html')
+
+@app.route('/ticket')
+def serve_ticket():
+    return send_from_directory(basedir, 'ticket.html')
+
 @app.route('/<path:filename>')
 def serve_static(filename):
     if filename.startswith('api/'):
