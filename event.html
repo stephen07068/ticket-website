@@ -35,6 +35,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 /* LAYOUT */
 .content{max-width:1100px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start;}
 @media(max-width:800px){.content{grid-template-columns:1fr;}.sidebar{order:-1;} .nav-links{display:none;}}
+@media(max-width:600px){.sidebar{position:static;}}
+
 
 /* INFO CHIPS */
 .info-chips{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
@@ -97,15 +99,31 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .seat-card.selected{border-color:#7c3aed; border-width:2px; background:#f0ebff;}
 .seat-card.sold-out{opacity:0.5; cursor:not-allowed; pointer-events:none;}
 .seat-image{width:140px; height:100px; object-fit:cover; flex-shrink:0; background:#f5f5f5;}
-.seat-content{flex:1; padding:16px; display:flex; justify-content:space-between; align-items:center;}
-.seat-info{flex:1;}
+.seat-content{flex:1; padding:16px; display:flex; justify-content:space-between; align-items:center; min-width:0;}
+.seat-info{flex:1; min-width:0;}
 .seat-section{font-size:15px; font-weight:700; color:#111; margin-bottom:4px;}
 .seat-details{font-size:13px; color:#666;}
-.seat-price-box{text-align:right;}
+.seat-price-box{text-align:right; flex-shrink:0; margin-left:12px;}
 .seat-price{font-size:20px; font-weight:800; color:#7c3aed;}
 .seat-available{font-size:11px; color:#22c55e; font-weight:600; margin-top:4px;}
 .seat-limited{font-size:11px; color:#f59e0b; font-weight:600; margin-top:4px;}
 .seat-sold-badge{font-size:11px; color:#ef4444; font-weight:700; background:#fee2e2; padding:4px 10px; border-radius:12px; margin-top:4px; display:inline-block;}
+
+/* MOBILE SEAT CARDS */
+@media(max-width:600px){
+  .seat-card{flex-direction:column;}
+  .seat-image{width:100%; height:160px;}
+  .seat-content{flex-direction:row; align-items:flex-start; gap:8px;}
+  .seat-price-box{text-align:right; flex-shrink:0;}
+  .seat-price{font-size:18px;}
+  .seat-section{font-size:14px;}
+  .ticket-box{position:static;}
+  .content{padding:16px 12px;}
+  .info-chips{gap:8px;}
+  .info-chip{padding:10px 12px;}
+  .features{grid-template-columns:1fr;}
+  #seat-listings{gap:10px;}
+}
 
 /* IMAGE MODAL */
 .image-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;padding:20px;}
