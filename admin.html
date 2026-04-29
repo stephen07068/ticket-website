@@ -178,6 +178,13 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 
   /* Tier rows */
   .tier-row .form-grid{grid-template-columns:1fr !important;}
+  .tier-view-image-row{flex-direction:column;align-items:stretch;}
+  .tier-view-image-row > *{width:100%;}
+  .tier-view-image-row .btn-create{width:100%;padding:10px 14px;}
+  .tier-view-file-name{text-align:center;}
+
+  /* Prevent horizontal overflow on body */
+  html, body { width: 100vw; overflow-x: hidden; }
 
   /* Toast */
   .toast{min-width:90vw;max-width:95vw;left:50%;top:60px;}
@@ -424,7 +431,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
           </div>
           <div class="form-group" style="margin-bottom:0;">
             <label>View Image</label>
-            <div style="display:flex; gap:8px;">
+            <div class="tier-view-image-row" style="display:flex; gap:8px; flex-wrap: wrap;">
               <input class="form-input tier-view-image-url" placeholder="Paste URL..." style="flex:1"/>
               <input type="file" class="tier-view-image-file" accept="image/*" style="display:none" onchange="this.nextElementSibling.nextElementSibling.textContent = this.files[0] ? this.files[0].name : '📷 Photo showing the view from this section'"/>
               <button type="button" class="btn-create" style="padding:0 14px;" onclick="this.previousElementSibling.click()">Upload File</button>
