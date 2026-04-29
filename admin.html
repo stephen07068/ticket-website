@@ -150,7 +150,9 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
   .user-role{font-size:10px;}
 
   /* Content panels */
-  .content-panel{padding:16px;}
+  .content-panel{padding:16px; width:100%; max-width:100vw; min-width:0; box-sizing:border-box; overflow-x:hidden;}
+  .main-content{width:100%; max-width:100vw; min-width:0; overflow-x:hidden;}
+  body{flex-direction:column; width:100%; max-width:100vw; overflow-x:hidden;}
 
   /* Orders header */
   .orders-header{flex-direction:column;align-items:flex-start;margin-bottom:16px;gap:10px;}
@@ -158,55 +160,11 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
   .filter-tabs{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;}
   .filter-btn{white-space:nowrap;padding:7px 14px;font-size:12px;flex-shrink:0;}
 
-  /* Orders table — convert to responsive cards */
-  .orders-table-wrap { border: none; background: transparent; overflow: visible; padding: 0; }
-  .orders-table { min-width: 0; display: block; border: none; }
-  .orders-table thead { display: none; }
-  .orders-table tbody { display: block; }
-  .orders-table tr { 
-    display: block; 
-    background: #fff; 
-    border-radius: 12px; 
-    border: 1px solid #e5e5e5; 
-    margin-bottom: 16px; 
-    padding: 16px; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  }
-  .orders-table td { 
-    display: flex; 
-    flex-direction: column; 
-    padding: 10px 0; 
-    border-bottom: 1px solid #f5f5f5; 
-    text-align: left; 
-    align-items: flex-start;
-  }
-  .orders-table td:last-child { border-bottom: none; padding-bottom: 0; }
-  
-  .orders-table td::before {
-    font-size: 10px;
-    color: #888;
-    text-transform: uppercase;
-    font-weight: 700;
-    margin-bottom: 4px;
-    letter-spacing: 0.5px;
-  }
-
-  #panel-orders .orders-table td:nth-child(1)::before { content: "Order ID"; }
-  #panel-orders .orders-table td:nth-child(2)::before { content: "Customer"; }
-  #panel-orders .orders-table td:nth-child(3)::before { content: "Event"; }
-  #panel-orders .orders-table td:nth-child(4)::before { content: "Payment"; }
-  #panel-orders .orders-table td:nth-child(5)::before { content: "Status"; }
-  #panel-orders .orders-table td:nth-child(6)::before { content: "Actions"; }
-
-  #panel-manage-events .orders-table td:nth-child(1)::before { content: "ID"; }
-  #panel-manage-events .orders-table td:nth-child(2)::before { content: "Event"; }
-  #panel-manage-events .orders-table td:nth-child(3)::before { content: "Category"; }
-  #panel-manage-events .orders-table td:nth-child(4)::before { content: "Date"; }
-  #panel-manage-events .orders-table td:nth-child(5)::before { content: "Venue"; }
-  #panel-manage-events .orders-table td:nth-child(6)::before { content: "Tiers"; }
-  #panel-manage-events .orders-table td:nth-child(7)::before { content: "Actions"; }
-
-  .approve-btn,.reject-btn{padding:8px 12px;font-size:12px;margin-right:6px;margin-top:6px;}
+  /* Orders table — scroll horizontally */
+  .orders-table-wrap{width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:10px; max-width:100%;}
+  .orders-table{min-width:600px;}
+  .orders-table th,.orders-table td{padding:10px 12px;font-size:12px;}
+  .approve-btn,.reject-btn{padding:5px 10px;font-size:11px;margin-right:4px;}
 
   /* Stats grid */
   .stats-grid{grid-template-columns:1fr;gap:12px;margin-bottom:20px;}
@@ -215,9 +173,9 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 
   /* Form grid always single column */
   .form-grid{grid-template-columns:1fr !important;}
-  .form-card{padding:16px;margin-bottom:16px;}
+  .form-card{padding:16px;margin-bottom:16px;max-width:100%;overflow-x:hidden;}
   .form-card h3{font-size:15px;margin-bottom:14px;}
-  .form-input{padding:10px 12px;font-size:14px;}
+  .form-input{padding:10px 12px;font-size:14px;width:100%;}
   .btn-create{padding:12px 20px;font-size:13px;}
 
   /* Tier rows */
@@ -225,10 +183,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
   .tier-view-image-row{flex-direction:column;align-items:stretch;}
   .tier-view-image-row > *{width:100%;}
   .tier-view-image-row .btn-create{width:100%;padding:10px 14px;}
-  .tier-view-file-name{text-align:center;}
-
-  /* Prevent horizontal overflow on body */
-  html, body { width: 100vw; overflow-x: hidden; }
+  .tier-view-file-name{text-align:center;word-break:break-all;}
 
   /* Toast */
   .toast{min-width:90vw;max-width:95vw;left:50%;top:60px;}
@@ -475,7 +430,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
           </div>
           <div class="form-group" style="margin-bottom:0;">
             <label>View Image</label>
-            <div class="tier-view-image-row" style="display:flex; gap:8px; flex-wrap: wrap;">
+            <div class="tier-view-image-row" style="display:flex; gap:8px;">
               <input class="form-input tier-view-image-url" placeholder="Paste URL..." style="flex:1"/>
               <input type="file" class="tier-view-image-file" accept="image/*" style="display:none" onchange="this.nextElementSibling.nextElementSibling.textContent = this.files[0] ? this.files[0].name : '📷 Photo showing the view from this section'"/>
               <button type="button" class="btn-create" style="padding:0 14px;" onclick="this.previousElementSibling.click()">Upload File</button>
@@ -774,7 +729,7 @@ function addTierRow() {
     </div>
     <div class="form-group" style="margin-bottom:0;">
       <label>View Image</label>
-      <div style="display:flex; gap:8px;">
+      <div class="tier-view-image-row" style="display:flex; gap:8px;">
         <input class="form-input tier-view-image-url" placeholder="Paste URL..." style="flex:1"/>
         <input type="file" class="tier-view-image-file" accept="image/*" style="display:none" onchange="this.nextElementSibling.nextElementSibling.textContent = this.files[0] ? this.files[0].name : '📷 Photo showing the view from this section'"/>
         <button type="button" class="btn-create" style="padding:0 14px;" onclick="this.previousElementSibling.click()">Upload File</button>
