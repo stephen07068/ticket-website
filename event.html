@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -9,7 +9,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:#f9f9fb;color:#111;}
 a{text-decoration:none;color:inherit;}
-
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;border-bottom:1px solid #f0f0f0;position:sticky;top:0;background:#fff;z-index:100;}
 .nav-logo{font-size:18px;font-weight:700;color:#7C3AED;}
 .nav-links{display:flex;gap:28px;list-style:none;}
@@ -20,8 +19,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .search-bar svg{width:14px;height:14px;opacity:0.5;}
 .cart-btn{background:none;border:none;cursor:pointer;padding:4px;}
 .cart-btn svg{width:22px;height:22px;color:#333;}
-
-/* HERO */
 .event-hero{position:relative;width:100%;height:340px;overflow:hidden;}
 .event-hero img{width:100%;height:100%;object-fit:cover;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.65) 100%);}
@@ -31,22 +28,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .badge-light{background:rgba(255,255,255,0.85);color:#111;}
 .event-hero-title{position:absolute;bottom:72px;left:32px;right:32px;}
 .event-hero-title h1{color:#fff;font-size:32px;font-weight:800;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,0.4);}
-
-/* LAYOUT */
 .content{max-width:1100px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start;}
-@media(max-width:800px){.content{grid-template-columns:1fr;}.sidebar{order:-1;} .nav-links{display:none;}}
-@media(max-width:600px){.sidebar{position:static;}}
-
-
-/* INFO CHIPS */
 .info-chips{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
 .info-chip{display:flex;align-items:center;gap:12px;border:1px solid #e5e5e5;border-radius:10px;padding:12px 18px;background:#fff;}
 .chip-icon{width:36px;height:36px;border-radius:8px;background:#f3f0ff;display:flex;align-items:center;justify-content:center;}
 .chip-icon svg{width:18px;height:18px;color:#7C3AED;}
 .chip-label{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
 .chip-value{font-size:14px;font-weight:700;color:#111;}
-
-/* ABOUT */
 .about h2{font-size:22px;font-weight:700;margin-bottom:16px;}
 .about p{font-size:14px;color:#555;line-height:1.8;margin-bottom:14px;}
 .features{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
@@ -55,83 +43,94 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .feature-icon svg{width:18px;height:18px;color:#7C3AED;}
 .feature-card h3{font-size:15px;font-weight:700;margin-bottom:6px;}
 .feature-card p{font-size:13px;color:#666;line-height:1.6;}
-
-/* SIDEBAR */
 .sidebar{position:sticky;top:80px;}
 .ticket-box{background:#fff;border:1px solid #e5e5e5;border-radius:16px;overflow:hidden;}
 .ticket-box-header{background:#7C3AED;padding:18px 20px;}
 .ticket-box-header h3{color:#fff;font-size:17px;font-weight:700;}
 .ticket-box-header p{color:rgba(255,255,255,0.75);font-size:13px;margin-top:2px;}
 .ticket-box-body{padding:20px;}
-
 .tier-option{border:2px solid #e5e5e5;border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;}
 .tier-option.selected{border-color:#7C3AED;background:#faf7ff;}
 .tier-option-top{display:flex;justify-content:space-between;align-items:flex-start;}
 .tier-name{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#888;}
 .tier-price{font-size:20px;font-weight:800;color:#7C3AED;}
 .tier-desc{font-size:12px;color:#666;margin-top:4px;}
-
 .qty-section{margin:16px 0;}
 .qty-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:10px;}
 .qty-control{display:flex;align-items:center;gap:16px;}
 .qty-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid #e5e5e5;background:#fff;font-size:18px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .qty-btn:hover{border-color:#7C3AED;color:#7C3AED;}
 .qty-val{font-size:18px;font-weight:700;min-width:24px;text-align:center;}
-
 .price-breakdown{border-top:1px solid #f0f0f0;padding-top:14px;margin-top:14px;}
 .price-row{display:flex;justify-content:space-between;font-size:13px;color:#666;margin-bottom:8px;}
 .price-total{display:flex;justify-content:space-between;font-size:17px;font-weight:800;color:#111;margin-top:10px;padding-top:10px;border-top:2px solid #f0f0f0;}
 .price-total .total-amount{color:#7C3AED;}
-
 .buy-btn{width:100%;margin-top:16px;padding:14px;border-radius:10px;background:#7C3AED;color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;}
 .buy-btn:hover{background:#6d28d9;}
 .buy-btn svg{width:18px;height:18px;}
-
 .early-bird{margin-top:16px;border:1.5px solid #e8e0ff;border-radius:12px;padding:14px 16px;background:#faf7ff;}
 .eb-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .eb-label{font-size:12px;font-weight:700;color:#7C3AED;display:flex;align-items:center;gap:6px;}
 .eb-icon{width:28px;height:28px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#7C3AED;}
 .eb-text{font-size:12px;color:#555;line-height:1.5;}
-
-/* SEAT LISTINGS */
-.seat-card{border:1px solid #e5e5e5; border-radius:12px; padding:0; background:#fff; cursor:pointer; transition:all 0.2s; display:flex; overflow:hidden;}
-.seat-card:hover{border-color:#7c3aed; background:#faf7ff; transform:translateY(-2px); box-shadow:0 4px 12px rgba(124,58,237,0.1);}
-.seat-card.selected{border-color:#7c3aed; border-width:2px; background:#f0ebff;}
-.seat-card.sold-out{opacity:0.5; cursor:not-allowed; pointer-events:none;}
-.seat-image{width:140px; height:100px; object-fit:cover; flex-shrink:0; background:#f5f5f5;}
-.seat-content{flex:1; padding:16px; display:flex; justify-content:space-between; align-items:center; min-width:0;}
-.seat-info{flex:1; min-width:0;}
-.seat-section{font-size:15px; font-weight:700; color:#111; margin-bottom:4px;}
-.seat-details{font-size:13px; color:#666;}
-.seat-price-box{text-align:right; flex-shrink:0; margin-left:12px;}
-.seat-price{font-size:20px; font-weight:800; color:#7c3aed;}
-.seat-available{font-size:11px; color:#22c55e; font-weight:600; margin-top:4px;}
-.seat-limited{font-size:11px; color:#f59e0b; font-weight:600; margin-top:4px;}
-.seat-sold-badge{font-size:11px; color:#ef4444; font-weight:700; background:#fee2e2; padding:4px 10px; border-radius:12px; margin-top:4px; display:inline-block;}
-
-/* MOBILE SEAT CARDS */
-@media(max-width:600px){
-  .seat-card{flex-direction:column;}
-  .seat-image{width:100%; height:160px;}
-  .seat-content{flex-direction:row; align-items:flex-start; gap:8px;}
-  .seat-price-box{text-align:right; flex-shrink:0;}
-  .seat-price{font-size:18px;}
-  .seat-section{font-size:14px;}
-  .ticket-box{position:static;}
-  .content{padding:16px 12px;}
-  .info-chips{gap:8px;}
-  .info-chip{padding:10px 12px;}
-  .features{grid-template-columns:1fr;}
-  #seat-listings{gap:10px;}
-}
-
-/* IMAGE MODAL */
+.seat-card{border:1px solid #e5e5e5;border-radius:12px;padding:0;background:#fff;cursor:pointer;transition:all 0.2s;display:flex;overflow:hidden;}
+.seat-card:hover{border-color:#7c3aed;background:#faf7ff;transform:translateY(-2px);box-shadow:0 4px 12px rgba(124,58,237,0.1);}
+.seat-card.selected{border-color:#7c3aed;border-width:2px;background:#f0ebff;}
+.seat-card.sold-out{opacity:0.5;cursor:not-allowed;pointer-events:none;}
+.seat-image{width:140px;height:100px;object-fit:cover;flex-shrink:0;background:#f5f5f5;}
+.seat-content{flex:1;padding:16px;display:flex;justify-content:space-between;align-items:center;min-width:0;}
+.seat-info{flex:1;min-width:0;}
+.seat-section{font-size:15px;font-weight:700;color:#111;margin-bottom:4px;}
+.seat-details{font-size:13px;color:#666;}
+.seat-price-box{text-align:right;flex-shrink:0;margin-left:12px;}
+.seat-price{font-size:20px;font-weight:800;color:#7c3aed;}
+.seat-available{font-size:11px;color:#22c55e;font-weight:600;margin-top:4px;}
+.seat-limited{font-size:11px;color:#f59e0b;font-weight:600;margin-top:4px;}
+.seat-sold-badge{font-size:11px;color:#ef4444;font-weight:700;background:#fee2e2;padding:4px 10px;border-radius:12px;margin-top:4px;display:inline-block;}
+.seats-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:16px;padding:24px;margin-bottom:32px;}
+.seats-wrap-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.seats-wrap-header h2{font-size:18px;font-weight:700;}
+.page-footer{background:#fff;border-top:1px solid #f0f0f0;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;}
 .image-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;padding:20px;}
 .image-modal.show{display:flex;opacity:1;}
 .image-modal-content{position:relative;max-width:90vw;max-height:90vh;}
 .image-modal-img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.5);display:block;}
 .image-modal-close{position:absolute;top:-40px;right:-10px;color:#fff;font-size:32px;background:none;border:none;cursor:pointer;opacity:0.7;transition:opacity 0.2s;}
 .image-modal-close:hover{opacity:1;}
+@media(max-width:800px){
+  nav{padding:0 16px;}
+  .nav-links{display:none;}
+  .search-bar{display:none;}
+  .content{grid-template-columns:1fr;padding:16px 14px;gap:20px;}
+  .sidebar{order:-1;position:static;}
+  .event-hero{height:220px;}
+  .event-hero-title{bottom:52px;left:16px;right:16px;}
+  .event-hero-title h1{font-size:20px;line-height:1.25;}
+  .hero-badges{bottom:16px;left:16px;gap:6px;}
+  .badge{font-size:10px;padding:5px 10px;}
+  .info-chips{gap:8px;margin-bottom:16px;}
+  .info-chip{padding:10px 12px;gap:8px;flex:1 1 calc(50% - 4px);min-width:0;}
+  .chip-icon{width:30px;height:30px;flex-shrink:0;}
+  .chip-value{font-size:13px;}
+  .features{grid-template-columns:1fr;}
+  .about h2{font-size:18px;}
+  .tier-option-top{gap:8px;}
+  .tier-price{font-size:17px;white-space:nowrap;flex-shrink:0;}
+  .tier-name{font-size:10px;}
+  .tier-desc{font-size:11px;}
+  .seat-card{flex-direction:column;}
+  .seat-image{width:100%;height:170px;}
+  .seat-content{flex-direction:row;align-items:flex-start;gap:10px;padding:12px 14px;}
+  .seat-info{flex:1;min-width:0;}
+  .seat-price-box{text-align:right;flex-shrink:0;}
+  .seat-price{font-size:17px;}
+  .seat-section{font-size:14px;}
+  #seat-listings{gap:10px;}
+  .seats-wrap{padding:16px;margin-bottom:20px;}
+  .seats-wrap-header{margin-bottom:14px;}
+  .seats-wrap-header h2{font-size:16px;}
+  .page-footer{padding:20px 16px;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+}
 </style>
 </head>
 <body>
@@ -184,9 +183,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
     </div>
 
     <!-- AVAILABLE SEATS LIST -->
-    <div style="background:#fff; border:1px solid #e5e5e5; border-radius:16px; padding:24px; margin-bottom:32px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2 style="font-size:18px; font-weight:700;">Available Seats</h2>
+    <div class="seats-wrap">
+      <div class="seats-wrap-header">
+        <h2>Available Seats</h2>
         <div style="display:flex; gap:8px; align-items:center;">
           <span style="font-size:12px; color:#888;" id="seat-count">Loading...</span>
         </div>
@@ -195,7 +194,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
       <!-- Seat Listings -->
       <div id="seat-listings" style="display:grid; gap:12px;">
         <div style="padding:40px; text-align:center; color:#888;">
-          <div style="font-size:32px; margin-bottom:8px;">🎫</div>
+          <div style="font-size:32px; margin-bottom:8px;">ðŸŽ«</div>
           <p>Loading available seats...</p>
         </div>
       </div>
@@ -231,7 +230,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
         <div class="qty-section" style="margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #f0f0f0;">
           <div class="qty-label" style="font-size:12px; color:#111; margin-bottom:8px;">How many tickets?</div>
           <div class="qty-control" style="background:#f9f9fc; border:1px solid #e5e5e5; border-radius:10px; padding:4px; display:inline-flex;">
-            <button class="qty-btn" style="border:none; background:transparent;" onclick="changeQty(-1)">−</button>
+            <button class="qty-btn" style="border:none; background:transparent;" onclick="changeQty(-1)">âˆ’</button>
             <span class="qty-val" id="qty" style="min-width:32px;">2</span>
             <button class="qty-btn" style="border:none; background:transparent;" onclick="changeQty(1)">+</button>
           </div>
@@ -265,7 +264,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 
         <div class="early-bird">
           <div class="eb-top">
-            <div class="eb-label">🏷 Early Bird Offer</div>
+            <div class="eb-label">ðŸ· Early Bird Offer</div>
             <div class="eb-icon">%</div>
           </div>
           <div class="eb-text">Save 15% when you buy 4 or more tickets. Use code: <strong>NEON15</strong></div>
@@ -275,9 +274,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
   </div>
 </div>
 
-<footer style="background:#fff;border-top:1px solid #f0f0f0;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
+<footer class="page-footer">
   <span style="font-size:15px;font-weight:700;color:#7C3AED;">TicketHubLive</span>
-  <span style="font-size:12px;color:#aaa;">© 2026 TicketHubLive. All rights reserved.</span>
+  <span style="font-size:12px;color:#aaa;">Â© 2026 TicketHubLive. All rights reserved.</span>
 </footer>
 
 <script src="/lib/api.js"></script>
@@ -432,7 +431,7 @@ function renderSeatListings() {
     const badgesHtml = `
       <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
         <span style="font-size:11px; color:#22c55e; font-weight:700; background:#dcfce7; padding:4px 8px; border-radius:12px; display:flex; align-items:center; gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Clear view</span>
-        <span style="font-size:11px; color:#ef4444; font-weight:700; background:#fee2e2; padding:4px 8px; border-radius:12px;">🔥 Fan favorite</span>
+        <span style="font-size:11px; color:#ef4444; font-weight:700; background:#fee2e2; padding:4px 8px; border-radius:12px;">ðŸ”¥ Fan favorite</span>
       </div>
     `;
     
@@ -440,7 +439,7 @@ function renderSeatListings() {
         ? `${rowStr} | ${seatsStr}`
         : `${t.available} seats available`;
         
-    const tqty = isGrouped && t.available > 1 ? `<div style="font-size:12px; font-weight:600; color:#555; margin-top:4px;">🎟️ ${t.available} tickets together</div>` : '';
+    const tqty = isGrouped && t.available > 1 ? `<div style="font-size:12px; font-weight:600; color:#555; margin-top:4px;">ðŸŽŸï¸ ${t.available} tickets together</div>` : '';
 
     const viewImg = t.view_image || 'https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=300&q=80';
 
@@ -484,7 +483,7 @@ function renderSeatListings() {
   countEl.textContent = `${availableListings} listings`;
 }
 
-// ─── Map Interactivity ────────────────────────────────────────────────────────
+// â”€â”€â”€ Map Interactivity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function highlightMapSection(tierName, isHover) {
   const el = document.getElementById(`map-${tierName}`);
   if(el && !el.classList.contains('disabled')) {
@@ -554,8 +553,8 @@ function renderMapPrices() {
 function updateTotal(){
   if (!selectedTierId) {
     document.getElementById('subtotal-label').textContent = 'Not enough tickets available';
-    document.getElementById('subtotal').textContent       = '—';
-    document.getElementById('total').textContent          = '—';
+    document.getElementById('subtotal').textContent       = 'â€”';
+    document.getElementById('total').textContent          = 'â€”';
     return;
   }
   const sub   = selectedPrice * qty;
@@ -596,7 +595,7 @@ async function loadEvent(){
     const e = await API.getEvent(id);
     currentEvent = e;
     if(e && e.title){
-      document.title = e.title + ' – TicketHubLive';
+      document.title = e.title + ' â€“ TicketHubLive';
       document.getElementById('event-title').textContent = e.title;
       document.getElementById('event-date').textContent  = e.date  || 'TBA';
       document.getElementById('event-time').textContent  = e.time  || 'TBA';
@@ -623,7 +622,7 @@ async function loadEvent(){
   updateTotal();
 }
 
-document.title = 'Neon Horizon: Midnight Symphony Tour – TicketHubLive';
+document.title = 'Neon Horizon: Midnight Symphony Tour â€“ TicketHubLive';
 loadEvent();
 
 function openImageModal(src, e) {
@@ -641,9 +640,10 @@ function closeImageModal() {
 <!-- IMAGE MODAL -->
 <div id="seatImageModal" class="image-modal" onclick="closeImageModal()">
   <div class="image-modal-content" onclick="event.stopPropagation()">
-    <button class="image-modal-close" onclick="closeImageModal()">×</button>
+    <button class="image-modal-close" onclick="closeImageModal()">Ã—</button>
     <img id="modalEnlargedImage" class="image-modal-img" src=""/>
   </div>
 </div>
 </body>
 </html>
+
