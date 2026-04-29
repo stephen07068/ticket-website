@@ -54,10 +54,11 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 .filter-btn:hover{border-color:#6c2bd9;color:#6c2bd9}
 .filter-btn.active{border-color:#6c2bd9;background:#f0ebff;color:#6c2bd9;font-weight:600}
 
-.orders-table-wrap{background:#fff;border-radius:14px;border:1px solid #e5e5e5;overflow:hidden}
-.orders-table{width:100%;border-collapse:collapse}
-.orders-table th{padding:14px 16px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;background:#fafafa;border-bottom:1px solid #eee;text-align:left}
+.orders-table-wrap{background:#fff;border-radius:14px;border:1px solid #e5e5e5;overflow:visible}
+.orders-table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden}
+.orders-table th{padding:14px 16px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;background:#fafafa;border-bottom:1px solid #eee;text-align:left;white-space:nowrap}
 .orders-table td{padding:14px 16px;font-size:14px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+.orders-table td:last-child{white-space:nowrap;min-width:160px}
 .orders-table tr:last-child td{border-bottom:none}
 .orders-table tr:hover td{background:#fafafa}
 
