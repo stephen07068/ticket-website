@@ -263,8 +263,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
         <div class="qty-section" style="margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #f0f0f0;">
           <div class="qty-label" style="font-size:12px; color:#111; margin-bottom:8px;">How many tickets?</div>
           <div class="qty-control" style="background:#f9f9fc; border:1px solid #e5e5e5; border-radius:10px; padding:4px; display:inline-flex;">
-            <button class="qty-btn" style="border:none; background:transparent;" onclick="changeQty(-1)">âˆ’</button>
-            <span class="qty-val" id="qty" style="min-width:32px;">2</span>
+            <button class="qty-btn" style="border:none; background:transparent;" onclick="changeQty(-1)">−</button>
+            <span class="qty-val" id="qty" style="min-width:32px;">1</span>
             <button class="qty-btn" style="border:none; background:transparent;" onclick="changeQty(1)">+</button>
           </div>
         </div>
@@ -284,8 +284,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
           </div>
         </div>
 
+        <div style="text-align:center; margin-bottom:12px; margin-top:-4px;">
+          <a href="#seat-listings" style="font-size:12px; color:#7C3AED; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" onclick="event.preventDefault(); document.querySelector('.seats-wrap').scrollIntoView({behavior:'smooth'});">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Scroll down to view seat photos
+          </a>
+        </div>
+
         <div class="price-breakdown">
-          <div class="price-row"><span id="subtotal-label">Subtotal (2 tickets)</span><span id="subtotal">$598.00</span></div>
+          <div class="price-row"><span id="subtotal-label">Subtotal (1 ticket)</span><span id="subtotal">$299.00</span></div>
           <div class="price-row"><span>Processing Fee</span><span>$12.50</span></div>
           <div class="price-total"><span>Total</span><span class="total-amount" id="total">$610.50</span></div>
         </div>
@@ -297,7 +304,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 
         <div class="early-bird">
           <div class="eb-top">
-            <div class="eb-label">ðŸ· Early Bird Offer</div>
+            <div class="eb-label">🏷️ Early Bird Offer</div>
             <div class="eb-icon">%</div>
           </div>
           <div class="eb-text">Save 15% when you buy 4 or more tickets. Use code: <strong>NEON15</strong></div>
@@ -309,16 +316,16 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 
 <footer class="page-footer">
   <span style="font-size:15px;font-weight:700;color:#7C3AED;">TicketHubLive</span>
-  <span style="font-size:12px;color:#aaa;">Â© 2026 TicketHubLive. All rights reserved.</span>
+  <span style="font-size:12px;color:#aaa;">© 2026 TicketHubLive. All rights reserved.</span>
 </footer>
 
 <script src="/lib/api.js"></script>
 <script>
-let selectedPrice = 299;
-let selectedTier = 'VIP Experience';
+let selectedPrice = 0;
+let selectedTier = '';
 let selectedTierId = null;
 let currentEvent = null;
-let qty = 2;
+let qty = 1;
 const SERVICE_FEE_PER = 12.25;
 const PROCESS_FEE_PER = 2.75;
 
@@ -333,7 +340,7 @@ const mapPositions = {
   "Section 104": { top: "50%", left: "82%" },
 };
 
-function selectTier(el, price, tier, tierId){
+function selectTier(el, price, tier, tierId, scroll = true){
   document.querySelectorAll('.tier-option').forEach(t=>t.classList.remove('selected'));
   if (el) el.classList.add('selected');
   selectedPrice = price;
@@ -349,6 +356,14 @@ function selectTier(el, price, tier, tierId){
        c.classList.add('selected');
     }
   });
+
+  // Scroll to seats on mobile view so user sees what they selected
+  if (scroll) {
+    const seatWrap = document.querySelector('.seats-wrap');
+    if (seatWrap) {
+      seatWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }
 
 function changeQty(d){
@@ -380,7 +395,7 @@ function renderTiers() {
        div.style.pointerEvents = 'none';
        div.style.borderColor = '#eee';
     } else {
-       div.onclick = () => selectTier(div, t.price, t.name, t.id);
+       div.onclick = () => selectTier(div, t.price, t.name, t.id, true);
        if (!firstValid) firstValid = {div, t};
     }
     
@@ -409,7 +424,7 @@ function renderTiers() {
 
   const buyBtn = document.querySelector('.buy-btn');
   if (!currentlySelectedValid && firstValid) {
-    selectTier(firstValid.div, firstValid.t.price, firstValid.t.name, firstValid.t.id);
+    selectTier(firstValid.div, firstValid.t.price, firstValid.t.name, firstValid.t.id, false);
     buyBtn.disabled = false;
     buyBtn.style.opacity = '1';
     buyBtn.style.cursor = 'pointer';
@@ -464,7 +479,7 @@ function renderSeatListings() {
     const badgesHtml = `
       <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
         <span style="font-size:11px; color:#22c55e; font-weight:700; background:#dcfce7; padding:4px 8px; border-radius:12px; display:flex; align-items:center; gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Clear view</span>
-        <span style="font-size:11px; color:#ef4444; font-weight:700; background:#fee2e2; padding:4px 8px; border-radius:12px;">ðŸ”¥ Fan favorite</span>
+        <span style="font-size:11px; color:#ef4444; font-weight:700; background:#fee2e2; padding:4px 8px; border-radius:12px;">🔥 Fan favorite</span>
       </div>
     `;
     
@@ -472,7 +487,7 @@ function renderSeatListings() {
         ? `${rowStr} | ${seatsStr}`
         : `${t.available} seats available`;
         
-    const tqty = isGrouped && t.available > 1 ? `<div style="font-size:12px; font-weight:600; color:#555; margin-top:4px;">ðŸŽŸï¸ ${t.available} tickets together</div>` : '';
+    const tqty = isGrouped && t.available > 1 ? `<div style="font-size:12px; font-weight:600; color:#555; margin-top:4px;">🎟️ ${t.available} tickets together</div>` : '';
 
     const viewImg = t.view_image || 'https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=300&q=80';
 
@@ -482,8 +497,8 @@ function renderSeatListings() {
     div.onclick = () => {
         const tierDivs = Array.from(document.querySelectorAll('.tier-option:not([style*="pointer-events: none"])'));
         const targetDiv = tierDivs.find(d => d.dataset.tierId == t.id);
-        if(targetDiv) selectTier(targetDiv, t.price, t.name, t.id);
-        else selectTier(null, t.price, t.name, t.id);
+        if(targetDiv) selectTier(targetDiv, t.price, t.name, t.id, false);
+        else selectTier(null, t.price, t.name, t.id, false);
     };
     
     div.innerHTML = `
@@ -532,7 +547,7 @@ function handleMapClick(tierName) {
     // Find its DOM element to pass to selectTier
     const tierDivs = Array.from(document.querySelectorAll('.tier-option:not(.disabled)'));
     const div = tierDivs.find(d => d.querySelector('.tier-name').textContent === tierName);
-    if(div) selectTier(div, tierObj.price, tierObj.name, tierObj.id);
+    if(div) selectTier(div, tierObj.price, tierObj.name, tierObj.id, true);
   }
 }
 
