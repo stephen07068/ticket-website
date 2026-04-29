@@ -110,6 +110,23 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 .toast-msg{font-size:13px;color:#666;line-height:1.5;}
 .form-group input.error{border-color:#ef4444 !important;background:#fff8f8 !important;animation:shake .4s ease;}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* EDIT BUTTON */
+.edit-btn{padding:7px 14px;background:#6c2bd9;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s;margin-right:6px}
+.edit-btn:hover{background:#5a22b8}
+
+/* EDIT IMAGE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:20px}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-box{background:#fff;border-radius:18px;padding:32px;width:100%;max-width:520px;box-shadow:0 24px 80px rgba(0,0,0,.22);transform:translateY(24px);transition:transform .28s;max-height:90vh;overflow-y:auto}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.modal-title{font-size:18px;font-weight:700;color:#111}
+.modal-close{width:34px;height:34px;border:none;background:#f5f5f5;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0}
+.modal-close:hover{background:#ffe5e5;color:#ef4444}
+.modal-sub{font-size:13px;color:#999;margin-bottom:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.edit-upload-area{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px dashed #d0c4f7;border-radius:10px;padding:20px;cursor:pointer;background:#faf8ff;transition:background .2s}
+.edit-upload-area:hover{background:#f0ebff}
 </style>
 </head>
 <body>
@@ -315,20 +332,46 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
       </div>
     </div>
 
-    <div class="form-card">
-      <h3>Ticket Tier</h3>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Tier Name</label>
-          <input class="form-input" id="evTierName" value="General Admission"/>
-        </div>
-        <div class="form-group">
-          <label>Price ($)</label>
-          <input class="form-input" type="number" id="evTierPrice" value="50"/>
-        </div>
-        <div class="form-group">
-          <label>Quantity</label>
-          <input class="form-input" type="number" id="evTierQty" value="200"/>
+    <div class="form-card" id="tiersContainer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3>Ticket Listings (Sections/Rows)</h3>
+        <button class="btn-create" style="padding:6px 12px; font-size:12px; background:#f0ebff; color:#6c2bd9; border:1px solid #d0c4f7;" onclick="addTierRow()">+ Add Listing</button>
+      </div>
+      <div id="tiersList">
+        <div class="tier-row" style="margin-bottom:20px; padding:20px; border:1px solid #e5e5e5; border-radius:12px; background:#fafafa; position:relative;">
+          <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Section</label>
+              <input class="form-input tier-section" placeholder="e.g. 216" value="216"/>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Row</label>
+              <input class="form-input tier-row-val" placeholder="e.g. 5" value="5"/>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Seats</label>
+              <input class="form-input tier-seats" placeholder="e.g. 16-17" value="16-17"/>
+            </div>
+          </div>
+          <div class="form-grid" style="grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Price ($)</label>
+              <input class="form-input tier-price" type="number" value="50"/>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Quantity</label>
+              <input class="form-input tier-qty" type="number" value="2"/>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>View Image</label>
+            <div style="display:flex; gap:8px;">
+              <input class="form-input tier-view-image-url" placeholder="Paste URL..." style="flex:1"/>
+              <input type="file" class="tier-view-image-file" accept="image/*" style="display:none" onchange="this.nextElementSibling.nextElementSibling.textContent = this.files[0] ? this.files[0].name : '📷 Photo showing the view from this section'"/>
+              <button type="button" class="btn-create" style="padding:0 14px;" onclick="this.previousElementSibling.click()">Upload File</button>
+              <div style="font-size:11px;color:#888;display:flex;align-items:center;" class="tier-view-file-name">📷 Photo showing the view from this section</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -337,6 +380,54 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
     </div>
   </div>
 </main>
+
+<!-- EDIT IMAGE MODAL -->
+<div class="modal-overlay" id="editModal" onclick="handleModalBackdrop(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Update Event Image</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-sub" id="editModalEventName">Event name</div>
+
+    <!-- Current image -->
+    <div id="editCurrentWrap" style="display:none;margin-bottom:16px;border-radius:10px;overflow:hidden">
+      <img id="editCurrentImg" src="" alt="Current" style="width:100%;height:150px;object-fit:cover;display:block"/>
+      <div style="font-size:11px;color:#888;padding:6px 12px;background:#f9f9fc">📷 Current image</div>
+    </div>
+
+    <!-- URL input -->
+    <div class="form-group" style="margin-bottom:10px">
+      <label>📎 Paste Image URL (Recommended)</label>
+      <input class="form-input" id="editImageUrl" placeholder="https://example.com/image.jpg" oninput="editPreviewUrl(this.value)"/>
+      <div style="font-size:11px;color:#aaa;margin-top:4px">Paste any public image URL — this persists across redeploys.</div>
+    </div>
+
+    <div style="text-align:center;font-size:12px;color:#bbb;margin:14px 0">— OR upload a file (local/testing only) —</div>
+
+    <!-- File upload -->
+    <label for="editImageFile" class="edit-upload-area">
+      <div style="font-size:22px">🖼️</div>
+      <div style="font-size:13px;font-weight:600;color:#6c2bd9">Click to upload image file</div>
+      <div style="font-size:11px;color:#aaa">JPG, PNG, GIF, WEBP</div>
+      <input type="file" id="editImageFile" accept="image/*" style="display:none" onchange="editPreviewFile(this)"/>
+    </label>
+
+    <!-- New image preview -->
+    <div id="editNewPreview" style="display:none;margin-top:12px;border-radius:10px;overflow:hidden">
+      <img id="editNewPreviewImg" src="" alt="Preview" style="width:100%;height:150px;object-fit:cover;display:block"/>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#f0ebff">
+        <span id="editNewPreviewName" style="font-size:12px;color:#6c2bd9;font-weight:500"></span>
+        <button onclick="clearEditPreview()" style="border:none;background:none;color:#ef4444;cursor:pointer;font-size:12px;font-weight:700">✕ Remove</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:24px">
+      <button class="btn-create" id="editSaveBtn" onclick="submitImageUpdate()" style="flex:1">💾 Save Image</button>
+      <button onclick="closeEditModal()" style="flex:1;padding:13px;border:1.5px solid #ddd;border-radius:10px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:#555">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <script src="/lib/api.js"></script>
 <script>
@@ -541,7 +632,52 @@ function showToast(title, msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
 }
 
-// ─── Create Event ─────────────────────────────────────────────────────────────
+function addTierRow() {
+  const tiersList = document.getElementById('tiersList');
+  const div = document.createElement('div');
+  div.className = 'tier-row';
+  div.style.cssText = 'margin-bottom:20px; padding:20px; border:1px solid #e5e5e5; border-radius:12px; background:#fafafa; position:relative;';
+  div.innerHTML = `
+    <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Section</label>
+        <input class="form-input tier-section" placeholder="e.g. 216" value=""/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Row</label>
+        <input class="form-input tier-row-val" placeholder="e.g. 5" value=""/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Seats</label>
+        <input class="form-input tier-seats" placeholder="e.g. 16-17" value=""/>
+      </div>
+    </div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Price ($)</label>
+        <input class="form-input tier-price" type="number" value="50"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Quantity</label>
+        <input class="form-input tier-qty" type="number" value="2"/>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <label>View Image</label>
+      <div style="display:flex; gap:8px;">
+        <input class="form-input tier-view-image-url" placeholder="Paste URL..." style="flex:1"/>
+        <input type="file" class="tier-view-image-file" accept="image/*" style="display:none" onchange="this.nextElementSibling.nextElementSibling.textContent = this.files[0] ? this.files[0].name : '📷 Photo showing the view from this section'"/>
+        <button type="button" class="btn-create" style="padding:0 14px;" onclick="this.previousElementSibling.click()">Upload File</button>
+        <div style="font-size:11px;color:#888;display:flex;align-items:center;" class="tier-view-file-name">📷 Photo showing the view from this section</div>
+      </div>
+    </div>
+    <button onclick="this.parentElement.remove()" style="position:absolute; top:8px; right:8px; background:#fee2e2; border:none; color:#ef4444; font-size:14px; cursor:pointer; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700;" title="Remove Listing">✕</button>
+  `;
+  tiersList.appendChild(div);
+}
+
+// ─── Events Panel ─────────────────────────────────────────────────────────────
+
 window.submitCreateEvent = async function() {
   console.log('=== CREATE EVENT CALLED ===');
   
@@ -604,9 +740,43 @@ window.submitCreateEvent = async function() {
       btn.textContent = 'Creating event…';
     }
 
-    // 2. Create the event with image_url
-    console.log('Creating event...');
-    const result = await API.createEvent({
+    const tierRows = document.querySelectorAll('.tier-row');
+    const tiers = [];
+    for (const row of tierRows) {
+      const section = row.querySelector('.tier-section').value.trim() || 'General';
+      const rowVal = row.querySelector('.tier-row-val').value.trim();
+      const seats = row.querySelector('.tier-seats').value.trim();
+      let name = section;
+      if (rowVal || seats) {
+          name = `${section}|${rowVal}|${seats}`;
+      }
+      const price = parseFloat(row.querySelector('.tier-price').value) || 0;
+      const qty = parseInt(row.querySelector('.tier-qty').value) || 0;
+      
+      let view_image = row.querySelector('.tier-view-image-url') ? row.querySelector('.tier-view-image-url').value.trim() : '';
+      const fileInput = row.querySelector('.tier-view-image-file');
+      
+      if (!view_image && fileInput && fileInput.files[0]) {
+        btn.textContent = `Uploading view for ${section}…`;
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        try {
+          const upRes = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+          if (upRes.ok) {
+            const upData = await upRes.json();
+            view_image = upData.image_url;
+          }
+        } catch(e) {
+          console.warn('Seat view upload failed:', e);
+        }
+      }
+      
+      if (name && price > 0 && qty > 0) {
+        tiers.push({ name, price, quantity: qty, view_image });
+      }
+    }
+
+    const payload = {
       title,
       category: document.getElementById('evCategory').value,
       description: document.getElementById('evDesc').value,
@@ -614,29 +784,44 @@ window.submitCreateEvent = async function() {
       time: document.getElementById('evTime').value,
       venue,
       image_url,
-      tiers: [{
-        name: document.getElementById('evTierName').value || 'General Admission',
-        price: parseFloat(document.getElementById('evTierPrice').value) || 50,
-        quantity: parseInt(document.getElementById('evTierQty').value) || 200
-      }]
-    });
+      tiers: tiers.length ? tiers : [{ name: 'General Admission', price: 50, quantity: 100 }]
+    };
+
+    // 2. Create the event
+    console.log('Creating event...');
+    const result = await API.createEvent(payload);
     
     console.log('Event created:', result);
     alert(`✅ Event "${title}" created successfully!`);
     
-    // Clear form
-    document.getElementById('evTitle').value = '';
-    document.getElementById('evVenue').value = '';
-    document.getElementById('evDate').value = '';
-    document.getElementById('evTime').value = '';
-    document.getElementById('evDesc').value = '';
-    document.getElementById('evTierName').value = 'General Admission';
-    document.getElementById('evTierPrice').value = '50';
-    document.getElementById('evTierQty').value = '200';
-    document.getElementById('evImageUrl').value = '';
-    clearImage();
+    // Clear form (null-safe)
+    const safeSet = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+    safeSet('evTitle', '');
+    safeSet('evVenue', '');
+    safeSet('evDate', '');
+    safeSet('evTime', '');
+    safeSet('evDesc', '');
+    safeSet('evImageUrl', '');
+    safeSet('evImageInput', '');
     
-    showTab('manage-events');
+    const imgPreview = document.getElementById('imagePreview'); if (imgPreview) imgPreview.src = '';
+    const imgWrap = document.getElementById('imagePreviewWrap'); if (imgWrap) imgWrap.style.display = 'none';
+    const upArea = document.getElementById('uploadArea'); if (upArea) upArea.style.background = '#faf8ff';
+    
+    const tiersList = document.getElementById('tiersList');
+    if (tiersList) {
+      tiersList.innerHTML = '';
+      addTierRow();
+    }
+    
+    // Switch to manage events tab
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+    const managePanel = document.getElementById('panel-manage-events');
+    if (managePanel) managePanel.classList.add('active');
+    const manageNav = document.querySelector('[onclick*="manage-events"]');
+    if (manageNav) manageNav.classList.add('active');
+    loadManageEvents();
   } catch (err) {
     console.error('Create event error:', err);
     alert('Failed: ' + err.message);
@@ -679,7 +864,8 @@ async function loadManageEvents() {
           <div style="font-size:13px;font-weight:600">${tierCount} tier${tierCount !== 1 ? 's' : ''}</div>
           <div style="font-size:11px;color:#888">${totalSeats} total seats</div>
         </td>
-        <td>
+        <td style="white-space:nowrap">
+          <button class="edit-btn" onclick="openEditImage(${e.id}, '${e.title.replace(/'/g, "\\'").replace(/`/g, "'")}', '${(e.image_url||'').replace(/'/g,"\\'")}')">✏️ Edit Image</button>
           <button class="reject-btn" onclick="deleteEventConfirm(${e.id}, '${e.title.replace(/'/g, "\\'")}')">🗑 Delete</button>
         </td>
       </tr>`;
@@ -691,16 +877,108 @@ async function loadManageEvents() {
 }
 
 async function deleteEventConfirm(eventId, eventTitle) {
-  if (!confirm(`Are you sure you want to delete "${eventTitle}"?\n\nThis action cannot be undone.`)) {
-    return;
-  }
-  
+  if (!confirm(`Are you sure you want to delete "${eventTitle}"?\n\nThis action cannot be undone.`)) return;
   try {
     await API.deleteEvent(eventId);
     alert(`✅ Event "${eventTitle}" deleted successfully!`);
     loadManageEvents();
   } catch (e) {
     alert(`❌ Failed to delete event: ${e.message}`);
+  }
+}
+
+// ─── Edit Image Modal ─────────────────────────────────────────────────────────
+let editTargetEventId = null;
+
+function openEditImage(id, title, currentUrl) {
+  editTargetEventId = id;
+  document.getElementById('editModalEventName').textContent = title;
+  document.getElementById('editImageUrl').value = '';
+  document.getElementById('editImageFile').value = '';
+  clearEditPreview();
+
+  // Show current image if exists
+  const wrap = document.getElementById('editCurrentWrap');
+  const img  = document.getElementById('editCurrentImg');
+  if (currentUrl) {
+    img.src = currentUrl;
+    wrap.style.display = 'block';
+  } else {
+    wrap.style.display = 'none';
+  }
+
+  document.getElementById('editModal').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('open');
+  editTargetEventId = null;
+}
+
+function handleModalBackdrop(e) {
+  if (e.target === document.getElementById('editModal')) closeEditModal();
+}
+
+function editPreviewUrl(url) {
+  if (!url) { document.getElementById('editNewPreview').style.display = 'none'; return; }
+  document.getElementById('editImageFile').value = '';
+  document.getElementById('editNewPreviewImg').src = url;
+  document.getElementById('editNewPreviewName').textContent = 'URL preview';
+  document.getElementById('editNewPreview').style.display = 'block';
+}
+
+function editPreviewFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('editImageUrl').value = '';
+  document.getElementById('editNewPreviewImg').src = URL.createObjectURL(file);
+  document.getElementById('editNewPreviewName').textContent = file.name;
+  document.getElementById('editNewPreview').style.display = 'block';
+}
+
+function clearEditPreview() {
+  document.getElementById('editNewPreview').style.display = 'none';
+  document.getElementById('editNewPreviewImg').src = '';
+  document.getElementById('editNewPreviewName').textContent = '';
+}
+
+async function submitImageUpdate() {
+  if (!editTargetEventId) return;
+  const btn      = document.getElementById('editSaveBtn');
+  const urlInput = document.getElementById('editImageUrl').value.trim();
+  const fileInput = document.getElementById('editImageFile');
+  const imageFile = fileInput.files[0];
+
+  if (!urlInput && !imageFile) {
+    showToast('No Image Selected', 'Please paste a URL or upload a file first.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    let image_url = urlInput;
+
+    if (!urlInput && imageFile) {
+      btn.textContent = 'Uploading…';
+      const formData = new FormData();
+      formData.append('image', imageFile);
+      const upRes = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+      if (!upRes.ok) throw new Error('Image upload failed');
+      const upData = await upRes.json();
+      image_url = upData.image_url;
+    }
+
+    await API.updateEvent(editTargetEventId, { image_url });
+    closeEditModal();
+    showToast('Image Updated ✅', 'The event image has been updated successfully.');
+    loadManageEvents();
+  } catch (e) {
+    showToast('Error', e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Save Image';
   }
 }
 

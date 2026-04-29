@@ -53,6 +53,18 @@ footer{border-top:1px solid #e5e5e5;padding:28px 40px;display:flex;justify-conte
 .footer-links{display:flex;gap:24px}
 .footer-links a{font-size:13px;color:#666;text-decoration:none}
 .footer-copy{font-size:13px;color:#999}
+
+/* ── Carousel ── */
+.carousel-wrapper{position:relative;width:100%;overflow:hidden;margin-bottom:16px}
+.carousel-track{display:flex;transition:transform .38s cubic-bezier(.4,0,.2,1);will-change:transform}
+.carousel-slide{min-width:100%;flex-shrink:0}
+.carousel-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px}
+.carousel-dot{width:8px;height:8px;border-radius:50%;background:#ddd;border:none;cursor:pointer;padding:0;transition:background .2s,transform .2s}
+.carousel-dot.active{background:#6c2bd9;transform:scale(1.4)}
+.c-arrow{width:36px;height:36px;border-radius:50%;border:1.5px solid #e0d7f7;background:#fff;color:#6c2bd9;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s;font-family:serif}
+.c-arrow:hover:not(:disabled){background:#6c2bd9;color:#fff;border-color:#6c2bd9}
+.c-arrow:disabled{opacity:.3;cursor:not-allowed}
+.ticket-counter{font-size:13px;color:#999;font-weight:500;min-width:44px;text-align:center}
 </style>
 </head>
 <body>
@@ -73,43 +85,17 @@ footer{border-top:1px solid #e5e5e5;padding:28px 40px;display:flex;justify-conte
   <h1 class="confirm-title">Order Confirmed!</h1>
   <p class="confirm-sub">Your tickets are ready. We've also sent a copy to your email.</p>
 
-  <div class="ticket-card">
-    <div class="ticket-hero" id="ticketHero">
-      <div class="ticket-hero-overlay"></div>
-      <span class="confirmed-badge" id="heroBadge">CONFIRMED</span>
-      <div class="ticket-hero-title" id="heroTitle">Loading…</div>
-    </div>
+  <!-- Carousel -->
+  <div class="carousel-wrapper">
+    <div class="carousel-track" id="carouselTrack"></div>
+  </div>
 
-    <div class="ticket-info">
-      <div class="info-grid">
-        <div>
-          <div class="info-label">DATE &amp; TIME</div>
-          <div class="info-val" id="dateTime">Oct 24, 2024 • 8:00 PM</div>
-        </div>
-        <div>
-          <div class="info-label">VENUE</div>
-          <div class="info-val" id="venue">Starlight Arena, LA</div>
-        </div>
-        <div>
-          <div class="info-label">SEAT NUMBER</div>
-          <div class="info-val seat" id="seat">SEC 102, ROW F, SEAT 14</div>
-        </div>
-        <div>
-          <div class="info-label">TICKET ID</div>
-          <div class="info-val" id="ticketId">THL-992-881-00X</div>
-        </div>
-      </div>
-
-      <div class="qr-section">
-        <div class="qr-box" style="background:#fff;">
-          <img id="qrImage" src="" alt="QR Code" style="width:100%; height:100%; object-fit:contain; display:none;"/>
-        </div>
-        <div class="qr-label" id="qrLabel">Scan this code at the entrance</div>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid #f0f0f0;font-size:13px;color:#888">
-          Total Paid: <strong id="totalPaid" style="color:#6c2bd9"></strong>
-        </div>
-      </div>
-    </div>
+  <!-- Nav: hidden for single ticket -->
+  <div class="carousel-nav" id="carouselNav" style="display:none">
+    <button class="c-arrow" id="prevBtn" onclick="carouselPrev()" aria-label="Previous ticket">&#8249;</button>
+    <div id="dotsContainer" style="display:flex;gap:8px;align-items:center"></div>
+    <span class="ticket-counter" id="ticketCounter">1 / 1</span>
+    <button class="c-arrow" id="nextBtn" onclick="carouselNext()" aria-label="Next ticket">&#8250;</button>
   </div>
 
   <div class="action-btns">
@@ -143,76 +129,141 @@ footer{border-top:1px solid #e5e5e5;padding:28px 40px;display:flex;justify-conte
 
 <script src="/lib/api.js"></script>
 <script>
+/* ── Module State ── */
+let ticketsData = [];
+let orderData   = {};
+let activeIndex = 0;
+
 async function loadTicket() {
-  const params = new URLSearchParams(window.location.search);
+  const params  = new URLSearchParams(window.location.search);
   const orderId = params.get('order');
-  if(!orderId) {
+  if (!orderId) {
     document.querySelector('.confirm-page').innerHTML = '<h2>No order specified.</h2>';
     return;
   }
-
   try {
     const data = await API.getTicket(orderId);
-    if(data.status !== 'approved') {
-      // Redirect back to pending if not approved
+    if (data.status !== 'approved') {
       window.location.href = `/pending?order=${orderId}`;
       return;
     }
+    orderData   = data;
+    ticketsData = data.tickets || [];
 
-    // Set event title
-    document.getElementById('heroTitle').textContent = data.event;
+    const track = document.getElementById('carouselTrack');
+    track.innerHTML = '';
+    ticketsData.forEach((t) => track.appendChild(buildTicketSlide(data, t)));
 
-    // Set event banner image if available
-    if (data.image_url) {
-      const hero = document.getElementById('ticketHero');
-      const imageUrl = data.image_url.startsWith('http') ? data.image_url : `/${data.image_url}`;
-      hero.style.backgroundImage = `url('${imageUrl}')`;
-      hero.style.backgroundSize = 'cover';
-      hero.style.backgroundPosition = 'center';
-      hero.style.backgroundRepeat = 'no-repeat';
-    }
-
-    // Set badge with category
-    if (data.category) {
-      document.getElementById('heroBadge').textContent = (data.category).toUpperCase() + ' • CONFIRMED';
-    }
-
-    document.getElementById('dateTime').textContent  = (data.date || '') + (data.time ? ' • ' + data.time : '');
-    document.getElementById('venue').textContent     = data.venue;
-
-    // Set total paid
-    if (data.total) {
-      document.getElementById('totalPaid').textContent = '$' + Number(data.total).toFixed(2);
-    }
-    
-    // Default to first ticket
-    if(data.tickets && data.tickets.length > 0) {
-      const t = data.tickets[0];
-      document.getElementById('seat').textContent     = t.seat || 'GA';
-      document.getElementById('ticketId').textContent = t.code;
-      
-      if(t.qr_data) {
-        document.getElementById('qrImage').src = t.qr_data;
-        document.getElementById('qrImage').style.display = 'block';
-      } else {
-        document.getElementById('qrLabel').textContent = 'QR Code unavailable';
-      }
-    }
+    if (ticketsData.length > 1) initCarousel(ticketsData.length);
   } catch(e) {
     console.error(e);
     alert('Failed to load ticket details.');
   }
 }
 
+function buildTicketSlide(data, t) {
+  const slide    = document.createElement('div');
+  slide.className = 'carousel-slide';
+  const imgUrl   = data.image_url
+    ? (data.image_url.startsWith('http') ? data.image_url : '/' + data.image_url)
+    : '';
+  const heroStyle = imgUrl
+    ? `background-image:url('${imgUrl}');background-size:cover;background-position:center;background-repeat:no-repeat;`
+    : '';
+  const badge   = data.category ? data.category.toUpperCase() + ' • CONFIRMED' : 'CONFIRMED';
+  const dateTime = (data.date || '') + (data.time ? ' • ' + data.time : '');
+  const total   = data.total ? '$' + Number(data.total).toFixed(2) : '';
+  const qrHTML  = t.qr_data
+    ? `<img src="${t.qr_data}" alt="QR Code" style="width:100%;height:100%;object-fit:contain;"/>`
+    : `<span style="font-size:13px;color:#aaa">QR Unavailable</span>`;
+  slide.innerHTML = `
+    <div class="ticket-card">
+      <div class="ticket-hero" style="${heroStyle}">
+        <div class="ticket-hero-overlay"></div>
+        <span class="confirmed-badge">${badge}</span>
+        <div class="ticket-hero-title">${data.event || ''}</div>
+      </div>
+      <div class="ticket-info">
+        <div class="info-grid">
+          <div><div class="info-label">DATE &amp; TIME</div><div class="info-val">${dateTime}</div></div>
+          <div><div class="info-label">VENUE</div><div class="info-val">${data.venue || ''}</div></div>
+          <div><div class="info-label">SEAT NUMBER</div><div class="info-val seat">${t.seat || 'GA'}</div></div>
+          <div><div class="info-label">TICKET ID</div><div class="info-val">${t.code || ''}</div></div>
+        </div>
+        <div class="qr-section">
+          <div class="qr-box" style="background:#fff;display:flex;align-items:center;justify-content:center;">${qrHTML}</div>
+          <div class="qr-label">Scan this code at the entrance</div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid #f0f0f0;font-size:13px;color:#888">
+            Total Paid: <strong style="color:#6c2bd9">${total}</strong>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  return slide;
+}
+
+/* ── Carousel Logic ── */
+function initCarousel(count) {
+  const nav = document.getElementById('carouselNav');
+  nav.style.display = 'flex';
+  const dots = document.getElementById('dotsContainer');
+  dots.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const d = document.createElement('button');
+    d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', `Ticket ${i + 1}`);
+    d.onclick = () => goToSlide(i);
+    dots.appendChild(d);
+  }
+  document.getElementById('ticketCounter').textContent = `1 / ${count}`;
+  updateArrows(count);
+
+  // Touch / swipe
+  const track = document.getElementById('carouselTrack');
+  let startX = 0;
+  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend',   e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) diff > 0 ? carouselNext() : carouselPrev();
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') carouselNext();
+    if (e.key === 'ArrowLeft')  carouselPrev();
+  });
+}
+
+function goToSlide(idx) {
+  const count = ticketsData.length;
+  if (idx < 0 || idx >= count) return;
+  activeIndex = idx;
+  document.getElementById('carouselTrack').style.transform = `translateX(-${idx * 100}%)`;
+  document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  document.getElementById('ticketCounter').textContent = `${idx + 1} / ${count}`;
+  updateArrows(count);
+}
+function carouselPrev() { goToSlide(activeIndex - 1); }
+function carouselNext() { goToSlide(activeIndex + 1); }
+function updateArrows(count) {
+  document.getElementById('prevBtn').disabled = activeIndex === 0;
+  document.getElementById('nextBtn').disabled = activeIndex === count - 1;
+}
+
 function downloadTicket(){
-  const title   = document.getElementById('heroTitle').textContent;
-  const dt      = document.getElementById('dateTime').textContent;
-  const venue   = document.getElementById('venue').textContent;
-  const seat    = document.getElementById('seat').textContent;
-  const tid     = document.getElementById('ticketId').textContent;
-  const total   = document.getElementById('totalPaid').textContent;
-  const qrImg   = document.getElementById('qrImage');
-  const category = document.getElementById('heroBadge').textContent.split('•')[0].trim().toLowerCase();
+  const t = ticketsData[activeIndex];
+  const d = orderData;
+  if (!t || !d) return;
+  const title    = d.event || '';
+  const dt       = (d.date || '') + (d.time ? ' • ' + d.time : '');
+  const venue    = d.venue || '';
+  const seat     = t.seat || 'GA';
+  const tid      = t.code || '';
+  const total    = d.total ? '$' + Number(d.total).toFixed(2) : '';
+  const category = (d.category || '').toLowerCase();
+  // Get QR image from active slide
+  const activeSlide = document.querySelectorAll('.carousel-slide')[activeIndex];
+  const qrImg = activeSlide ? activeSlide.querySelector('img[alt="QR Code"]') : null;
 
   // Canvas dimensions - horizontal ticket with stub (900x400)
   const W = 900, H = 400;
@@ -221,24 +272,17 @@ function downloadTicket(){
   canvas.height = H;
   const ctx     = canvas.getContext('2d');
 
-  // Load event image from hero element
-  const heroEl = document.getElementById('ticketHero');
-  const bgImage = heroEl.style.backgroundImage;
+  // Load event image from active slide's hero element
+  const heroEl = activeSlide ? activeSlide.querySelector('.ticket-hero') : null;
+  const bgImage = heroEl ? heroEl.style.backgroundImage : '';
   let eventImage = null;
-  
+
   if (bgImage && bgImage !== 'none') {
     const imageUrl = bgImage.slice(5, -2);
     eventImage = new Image();
     eventImage.crossOrigin = 'anonymous';
-    
-    eventImage.onload = function() {
-      drawTicketWithImage(eventImage);
-    };
-    
-    eventImage.onerror = function() {
-      drawTicketWithImage(null);
-    };
-    
+    eventImage.onload = function() { drawTicketWithImage(eventImage); };
+    eventImage.onerror = function() { drawTicketWithImage(null); };
     eventImage.src = imageUrl;
   } else {
     drawTicketWithImage(null);
@@ -1027,8 +1071,9 @@ function downloadTicket(){
   }
 }
 function shareTicket(){
+  const title = (orderData && orderData.event) ? orderData.event : 'this event';
   if(navigator.share){
-    navigator.share({title:'My TicketHubLive Ticket',text:'Check out my ticket for '+document.getElementById('heroTitle').textContent,url:window.location.href});
+    navigator.share({title:'My TicketHubLive Ticket',text:'Check out my ticket for '+title,url:window.location.href});
   } else {
     navigator.clipboard.writeText(window.location.href).then(()=>alert('Link copied to clipboard!'));
   }

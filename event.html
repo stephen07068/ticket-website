@@ -90,6 +90,30 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .eb-label{font-size:12px;font-weight:700;color:#7C3AED;display:flex;align-items:center;gap:6px;}
 .eb-icon{width:28px;height:28px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#7C3AED;}
 .eb-text{font-size:12px;color:#555;line-height:1.5;}
+
+/* SEAT LISTINGS */
+.seat-card{border:1px solid #e5e5e5; border-radius:12px; padding:0; background:#fff; cursor:pointer; transition:all 0.2s; display:flex; overflow:hidden;}
+.seat-card:hover{border-color:#7c3aed; background:#faf7ff; transform:translateY(-2px); box-shadow:0 4px 12px rgba(124,58,237,0.1);}
+.seat-card.selected{border-color:#7c3aed; border-width:2px; background:#f0ebff;}
+.seat-card.sold-out{opacity:0.5; cursor:not-allowed; pointer-events:none;}
+.seat-image{width:140px; height:100px; object-fit:cover; flex-shrink:0; background:#f5f5f5;}
+.seat-content{flex:1; padding:16px; display:flex; justify-content:space-between; align-items:center;}
+.seat-info{flex:1;}
+.seat-section{font-size:15px; font-weight:700; color:#111; margin-bottom:4px;}
+.seat-details{font-size:13px; color:#666;}
+.seat-price-box{text-align:right;}
+.seat-price{font-size:20px; font-weight:800; color:#7c3aed;}
+.seat-available{font-size:11px; color:#22c55e; font-weight:600; margin-top:4px;}
+.seat-limited{font-size:11px; color:#f59e0b; font-weight:600; margin-top:4px;}
+.seat-sold-badge{font-size:11px; color:#ef4444; font-weight:700; background:#fee2e2; padding:4px 10px; border-radius:12px; margin-top:4px; display:inline-block;}
+
+/* IMAGE MODAL */
+.image-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;padding:20px;}
+.image-modal.show{display:flex;opacity:1;}
+.image-modal-content{position:relative;max-width:90vw;max-height:90vh;}
+.image-modal-img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.5);display:block;}
+.image-modal-close{position:absolute;top:-40px;right:-10px;color:#fff;font-size:32px;background:none;border:none;cursor:pointer;opacity:0.7;transition:opacity 0.2s;}
+.image-modal-close:hover{opacity:1;}
 </style>
 </head>
 <body>
@@ -141,6 +165,24 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
       </div>
     </div>
 
+    <!-- AVAILABLE SEATS LIST -->
+    <div style="background:#fff; border:1px solid #e5e5e5; border-radius:16px; padding:24px; margin-bottom:32px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="font-size:18px; font-weight:700;">Available Seats</h2>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span style="font-size:12px; color:#888;" id="seat-count">Loading...</span>
+        </div>
+      </div>
+      
+      <!-- Seat Listings -->
+      <div id="seat-listings" style="display:grid; gap:12px;">
+        <div style="padding:40px; text-align:center; color:#888;">
+          <div style="font-size:32px; margin-bottom:8px;">🎫</div>
+          <p>Loading available seats...</p>
+        </div>
+      </div>
+    </div>
+
     <div class="about">
       <h2>About the Event</h2>
       <p id="event-desc1">Experience the most anticipated audio-visual spectacle of the decade. Neon Horizon brings their signature fusion of synth-wave and orchestral arrangements to the Crystal Arena for a one-night-only performance.</p>
@@ -168,25 +210,27 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
         <p>Reserved seating available</p>
       </div>
       <div class="ticket-box-body">
-        <div class="tier-option selected" onclick="selectTier(this,299,'VIP Experience')" id="tier-vip">
-          <div class="tier-option-top">
-            <div><div class="tier-name">VIP Experience</div><div class="tier-desc">Front row access, private lounge, &amp; gift bag</div></div>
-            <div class="tier-price">$299</div>
-          </div>
-        </div>
-        <div class="tier-option" onclick="selectTier(this,129,'Regular Admission')" id="tier-reg">
-          <div class="tier-option-top">
-            <div><div class="tier-name">Regular Admission</div><div class="tier-desc">Main floor and balcony seating options</div></div>
-            <div class="tier-price">$129</div>
+        <div class="qty-section" style="margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #f0f0f0;">
+          <div class="qty-label" style="font-size:12px; color:#111; margin-bottom:8px;">How many tickets?</div>
+          <div class="qty-control" style="background:#f9f9fc; border:1px solid #e5e5e5; border-radius:10px; padding:4px; display:inline-flex;">
+            <button class="qty-btn" style="border:none; background:transparent;" onclick="changeQty(-1)">−</button>
+            <span class="qty-val" id="qty" style="min-width:32px;">2</span>
+            <button class="qty-btn" style="border:none; background:transparent;" onclick="changeQty(1)">+</button>
           </div>
         </div>
 
-        <div class="qty-section">
-          <div class="qty-label">Quantity</div>
-          <div class="qty-control">
-            <button class="qty-btn" onclick="changeQty(-1)">−</button>
-            <span class="qty-val" id="qty">2</span>
-            <button class="qty-btn" onclick="changeQty(1)">+</button>
+        <div id="tier-list-container">
+          <div class="tier-option selected" onclick="selectTier(this,299,'VIP Experience')" id="tier-vip">
+            <div class="tier-option-top">
+              <div><div class="tier-name">VIP Experience</div><div class="tier-desc">Front row access, private lounge, &amp; gift bag</div></div>
+              <div class="tier-price">$299</div>
+            </div>
+          </div>
+          <div class="tier-option" onclick="selectTier(this,129,'Regular Admission')" id="tier-reg">
+            <div class="tier-option-top">
+              <div><div class="tier-name">Regular Admission</div><div class="tier-desc">Main floor and balcony seating options</div></div>
+              <div class="tier-price">$129</div>
+            </div>
           </div>
         </div>
 
@@ -228,22 +272,274 @@ let qty = 2;
 const SERVICE_FEE_PER = 12.25;
 const PROCESS_FEE_PER = 2.75;
 
+let currentTiers = [];
+
+const mapPositions = {
+  "Section 101": { top: "25%", left: "50%" },
+  "Section 102": { top: "75%", left: "50%" },
+  "Floor Left": { top: "50%", left: "32%" },
+  "Floor Right": { top: "50%", left: "68%" },
+  "Section 103": { top: "50%", left: "18%" },
+  "Section 104": { top: "50%", left: "82%" },
+};
+
 function selectTier(el, price, tier, tierId){
   document.querySelectorAll('.tier-option').forEach(t=>t.classList.remove('selected'));
-  el.classList.add('selected');
+  if (el) el.classList.add('selected');
   selectedPrice = price;
   selectedTier = tier;
   selectedTierId = tierId || null;
   updateTotal();
+  syncMapState();
+
+  // Sync seat cards
+  document.querySelectorAll('.seat-card').forEach(c => {
+    c.classList.remove('selected');
+    if (c.dataset.tierId == tierId) {
+       c.classList.add('selected');
+    }
+  });
 }
 
 function changeQty(d){
   qty = Math.max(1, qty + d);
   document.getElementById('qty').textContent = qty;
+  renderTiers();
   updateTotal();
 }
 
+function renderTiers() {
+  const box = document.getElementById('tier-list-container');
+  if(!box || !currentTiers.length) return;
+  box.innerHTML = '';
+  
+  let firstValid = null;
+  let currentlySelectedValid = false;
+
+  currentTiers.forEach((t) => {
+    const isAvailable = t.available >= qty;
+    const isSelected = selectedTierId === t.id && isAvailable;
+    if (isSelected) currentlySelectedValid = true;
+
+    const div = document.createElement('div');
+    div.className = 'tier-option' + (isSelected ? ' selected' : '');
+    div.dataset.tierId = t.id;
+    
+    if (!isAvailable) {
+       div.style.opacity = '0.4';
+       div.style.pointerEvents = 'none';
+       div.style.borderColor = '#eee';
+    } else {
+       div.onclick = () => selectTier(div, t.price, t.name, t.id);
+       if (!firstValid) firstValid = {div, t};
+    }
+    
+    let sectionStr = t.name;
+    if (t.name.includes('|')) {
+        sectionStr = `Section ${t.name.split('|')[0]}`;
+    }
+
+    div.innerHTML = `
+      <div class="tier-option-top">
+        <div>
+          <div class="tier-name" style="${!isAvailable ? 'color:#aaa' : ''}">${sectionStr}</div>
+          <div class="tier-desc" style="${!isAvailable ? 'color:#ef4444;font-weight:600;' : ''}">${isAvailable ? `${t.available} seats available` : `Only ${t.available} left`}</div>
+        </div>
+        <div class="tier-price" style="${!isAvailable ? 'color:#ccc' : ''}">$${t.price.toFixed(2)}</div>
+      </div>`;
+      
+    // Hover sync with map
+    if (isAvailable) {
+      div.addEventListener('mouseenter', () => highlightMapSection(t.name, true));
+      div.addEventListener('mouseleave', () => highlightMapSection(t.name, false));
+    }
+    
+    box.appendChild(div);
+  });
+
+  const buyBtn = document.querySelector('.buy-btn');
+  if (!currentlySelectedValid && firstValid) {
+    selectTier(firstValid.div, firstValid.t.price, firstValid.t.name, firstValid.t.id);
+    buyBtn.disabled = false;
+    buyBtn.style.opacity = '1';
+    buyBtn.style.cursor = 'pointer';
+  } else if (!currentlySelectedValid && !firstValid) {
+    selectedTierId = null;
+    selectedPrice = 0;
+    buyBtn.disabled = true;
+    buyBtn.style.opacity = '0.5';
+    buyBtn.style.cursor = 'not-allowed';
+    syncMapState();
+  } else {
+    buyBtn.disabled = false;
+    buyBtn.style.opacity = '1';
+    buyBtn.style.cursor = 'pointer';
+  }
+  
+  renderMapPrices();
+  renderSeatListings();
+}
+
+function renderSeatListings() {
+  const container = document.getElementById('seat-listings');
+  const countEl = document.getElementById('seat-count');
+  if(!container) return;
+  
+  if(!currentTiers || currentTiers.length === 0) {
+    container.innerHTML = `<div style="padding:40px; text-align:center; color:#888;"><p>No seats available for this event.</p></div>`;
+    countEl.textContent = '0 listings';
+    return;
+  }
+  
+  container.innerHTML = '';
+  let availableListings = 0;
+  
+  currentTiers.forEach(t => {
+    if(t.available < qty) return;
+    availableListings++;
+    
+    let sectionStr = t.name;
+    let rowStr = '';
+    let seatsStr = '';
+    let isGrouped = false;
+    
+    if (t.name.includes('|')) {
+      const parts = t.name.split('|');
+      sectionStr = parts[0] ? `Section ${parts[0]}` : '';
+      rowStr = parts[1] ? `Row ${parts[1]}` : '';
+      seatsStr = parts[2] ? `Seats ${parts[2]}` : '';
+      isGrouped = true;
+    }
+    
+    const badgesHtml = `
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+        <span style="font-size:11px; color:#22c55e; font-weight:700; background:#dcfce7; padding:4px 8px; border-radius:12px; display:flex; align-items:center; gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Clear view</span>
+        <span style="font-size:11px; color:#ef4444; font-weight:700; background:#fee2e2; padding:4px 8px; border-radius:12px;">🔥 Fan favorite</span>
+      </div>
+    `;
+    
+    const detailsHtml = isGrouped 
+        ? `${rowStr} | ${seatsStr}`
+        : `${t.available} seats available`;
+        
+    const tqty = isGrouped && t.available > 1 ? `<div style="font-size:12px; font-weight:600; color:#555; margin-top:4px;">🎟️ ${t.available} tickets together</div>` : '';
+
+    const viewImg = t.view_image || 'https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=300&q=80';
+
+    const div = document.createElement('div');
+    div.className = 'seat-card' + (selectedTierId === t.id ? ' selected' : '');
+    div.dataset.tierId = t.id;
+    div.onclick = () => {
+        const tierDivs = Array.from(document.querySelectorAll('.tier-option:not([style*="pointer-events: none"])'));
+        const targetDiv = tierDivs.find(d => d.dataset.tierId == t.id);
+        if(targetDiv) selectTier(targetDiv, t.price, t.name, t.id);
+        else selectTier(null, t.price, t.name, t.id);
+    };
+    
+    div.innerHTML = `
+      <img src="${viewImg}" class="seat-image" alt="View from seat" onclick="openImageModal('${viewImg}', event)" style="cursor:zoom-in"/>
+      <div class="seat-content">
+        <div class="seat-info">
+          <div class="seat-section">${sectionStr}</div>
+          <div class="seat-details">${detailsHtml}</div>
+          ${tqty}
+          ${badgesHtml}
+        </div>
+        <div class="seat-price-box">
+          <div class="seat-price">$${Math.round(t.price)}</div>
+          <div style="font-size:11px; color:#888; margin-top:2px;">All fees included</div>
+          <div class="seat-available">Available</div>
+        </div>
+      </div>
+    `;
+    
+    div.addEventListener('mouseenter', () => highlightMapSection(t.name, true));
+    div.addEventListener('mouseleave', () => highlightMapSection(t.name, false));
+
+    container.appendChild(div);
+  });
+  
+  if(availableListings === 0) {
+    container.innerHTML = `<div style="padding:40px; text-align:center; color:#888;"><p>No seats available for the selected quantity.</p></div>`;
+  }
+  
+  countEl.textContent = `${availableListings} listings`;
+}
+
+// ─── Map Interactivity ────────────────────────────────────────────────────────
+function highlightMapSection(tierName, isHover) {
+  const el = document.getElementById(`map-${tierName}`);
+  if(el && !el.classList.contains('disabled')) {
+    if(isHover) el.classList.add('hovered');
+    else el.classList.remove('hovered');
+  }
+}
+
+function handleMapClick(tierName) {
+  // Find tier in active list
+  const tierObj = currentTiers.find(t => t.name === tierName && t.available >= qty);
+  if (tierObj) {
+    // Find its DOM element to pass to selectTier
+    const tierDivs = Array.from(document.querySelectorAll('.tier-option:not(.disabled)'));
+    const div = tierDivs.find(d => d.querySelector('.tier-name').textContent === tierName);
+    if(div) selectTier(div, tierObj.price, tierObj.name, tierObj.id);
+  }
+}
+
+function syncMapState() {
+  // Reset all SVG
+  document.querySelectorAll('.map-section').forEach(el => {
+    el.classList.remove('selected');
+    el.classList.add('disabled'); // Disable by default until proven available
+  });
+  document.querySelectorAll('.price-bubble').forEach(el => el.classList.remove('selected'));
+  
+  // Enable valid ones, select the active one
+  currentTiers.forEach(t => {
+    if (t.available >= qty) {
+      const el = document.getElementById(`map-${t.name}`);
+      if(el) {
+        el.classList.remove('disabled');
+        if (selectedTierId === t.id) {
+          el.classList.add('selected');
+          const bubble = document.getElementById(`bubble-${t.name}`);
+          if (bubble) bubble.classList.add('selected');
+        }
+      }
+    }
+  });
+}
+
+function renderMapPrices() {
+  const container = document.getElementById('price-bubbles');
+  if (!container) {
+    syncMapState();
+    return;
+  }
+  container.innerHTML = '';
+  
+  currentTiers.forEach(t => {
+    if (t.available >= qty && mapPositions[t.name]) {
+      const pos = mapPositions[t.name];
+      const div = document.createElement('div');
+      div.id = `bubble-${t.name}`;
+      div.className = 'price-bubble' + (selectedTierId === t.id ? ' selected' : '');
+      div.style.top = pos.top;
+      div.style.left = pos.left;
+      div.textContent = `$${Math.round(t.price)}`;
+      container.appendChild(div);
+    }
+  });
+  syncMapState();
+}
+
 function updateTotal(){
+  if (!selectedTierId) {
+    document.getElementById('subtotal-label').textContent = 'Not enough tickets available';
+    document.getElementById('subtotal').textContent       = '—';
+    document.getElementById('total').textContent          = '—';
+    return;
+  }
   const sub   = selectedPrice * qty;
   const svc   = SERVICE_FEE_PER * qty;
   const proc  = PROCESS_FEE_PER * qty;
@@ -301,23 +597,8 @@ async function loadEvent(){
       }
       // Build tier options dynamically
       if(e.tiers && e.tiers.length){
-        const box = document.querySelector('.ticket-box-body');
-        // Remove static tier divs
-        box.querySelectorAll('.tier-option').forEach(t=>t.remove());
-        // Insert new tiers before .qty-section
-        const qtySection = box.querySelector('.qty-section');
-        e.tiers.forEach((t, i) => {
-          const div = document.createElement('div');
-          div.className = 'tier-option' + (i===0?' selected':'');
-          div.innerHTML = `
-            <div class="tier-option-top">
-              <div><div class="tier-name">${t.name}</div><div class="tier-desc">${t.available} seats available</div></div>
-              <div class="tier-price">$${t.price.toFixed(2)}</div>
-            </div>`;
-          div.onclick = () => selectTier(div, t.price, t.name, t.id);
-          box.insertBefore(div, qtySection);
-          if(i === 0){ selectedPrice = t.price; selectedTier = t.name; selectedTierId = t.id; }
-        });
+        currentTiers = e.tiers;
+        renderTiers();
       }
     }
   } catch(err){ console.log('Using demo event data'); }
@@ -326,6 +607,25 @@ async function loadEvent(){
 
 document.title = 'Neon Horizon: Midnight Symphony Tour – TicketHubLive';
 loadEvent();
+
+function openImageModal(src, e) {
+  e.stopPropagation();
+  const modal = document.getElementById('seatImageModal');
+  const img = document.getElementById('modalEnlargedImage');
+  img.src = src;
+  modal.classList.add('show');
+}
+function closeImageModal() {
+  document.getElementById('seatImageModal').classList.remove('show');
+}
 </script>
+
+<!-- IMAGE MODAL -->
+<div id="seatImageModal" class="image-modal" onclick="closeImageModal()">
+  <div class="image-modal-content" onclick="event.stopPropagation()">
+    <button class="image-modal-close" onclick="closeImageModal()">×</button>
+    <img id="modalEnlargedImage" class="image-modal-img" src=""/>
+  </div>
+</div>
 </body>
 </html>

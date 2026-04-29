@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+from sqlalchemy import text
 from models import db, Event, TicketTier, Order, Ticket
 import uuid, datetime, os, io, base64, urllib.parse
 import sys
@@ -21,24 +22,26 @@ CORS(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# ── DATABASE CONFIG (PostgreSQL Only) ─────────────────────────────
-# Get database URL from environment variable
+# ── DATABASE CONFIG (Supabase PostgreSQL Support) ─────────────────────────────
+# Get database URL from environment variable (for Supabase) or use SQLite as fallback
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL environment variable is required. Please set it to your PostgreSQL database URL.")
-
-logger.info("Using PostgreSQL database")
-# Fix for Supabase/Heroku postgres URL format
-if DATABASE_URL.startswith('postgres://'):
-    DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
-    logger.info("Fixed postgres:// to postgresql://")
-
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_pre_ping': True,
-    'pool_recycle': 300,
-}
+if DATABASE_URL:
+    # Production: Use PostgreSQL
+    logger.info("Using PostgreSQL database")
+    # Fix for Supabase/Heroku postgres URL format
+    if DATABASE_URL.startswith('postgres://'):
+        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+        logger.info("Fixed postgres:// to postgresql://")
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+    }
+else:
+    # Local development: Use SQLite
+    logger.info("Using SQLite database (local development)")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'tickethub.db')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tickethub-secret-2024')
@@ -73,13 +76,54 @@ def generate_qr_base64(data: str) -> str:
 
 def create_tickets_for_order(order: Order) -> list:
     """Generate tickets only after admin approval. Called ONLY from admin_approve."""
+    tier = TicketTier.query.get(order.tier_id) if order.tier_id else None
+    tier_name = tier.name if tier else "GA"
+    
+    if '|' in tier_name:
+        parts = tier_name.split('|')
+        section = parts[0] if len(parts) > 0 and parts[0] else "GA"
+        row = parts[1] if len(parts) > 1 and parts[1] else ""
+        seats_str = parts[2] if len(parts) > 2 and parts[2] else ""
+        
+        start_seat = 1
+        if '-' in seats_str:
+            try:
+                start_seat = int(seats_str.split('-')[0].strip())
+            except:
+                pass
+        elif seats_str.isdigit():
+            start_seat = int(seats_str)
+            
+        base_seat = f"SEC {section}"
+        if row:
+            base_seat += f", ROW {row}"
+            
+        results = []
+        for i in range(order.quantity):
+            seat = f"{base_seat}, SEAT {start_seat + i}"
+            code = f"THL-{order.id:04d}-{uuid.uuid4().hex[:6].upper()}"
+            verify = f"http://localhost:5000/api/verify?ticketId={code}"
+            qr_data = generate_qr_base64(verify)
+            ticket = Ticket(order_id=order.id, seat_number=seat, ticket_code=code, qr_data=qr_data)
+            db.session.add(ticket)
+            results.append({'seat': seat, 'code': code})
+            
+        return results
+
+    if "SEC" in tier_name.upper() or "ROW" in tier_name.upper():
+        base_seat = tier_name
+    else:
+        section = (order.id * 10) % 100 + 100
+        row = chr(65 + (order.id % 26))
+        base_seat = f"SEC {section}, ROW {row}"
+
     results = []
     for i in range(order.quantity):
-        seat    = f"SEC {order.id * 10 + i + 1}, ROW {chr(65 + (order.id % 26))}, SEAT {i + 1}"
-        code    = f"THL-{order.id:04d}-{uuid.uuid4().hex[:6].upper()}"
-        verify  = f"http://localhost:5000/api/verify?ticketId={code}"
+        seat = f"{base_seat}, SEAT {i + 1}"
+        code = f"THL-{order.id:04d}-{uuid.uuid4().hex[:6].upper()}"
+        verify = f"http://localhost:5000/api/verify?ticketId={code}"
         qr_data = generate_qr_base64(verify)
-        ticket  = Ticket(order_id=order.id, seat_number=seat, ticket_code=code, qr_data=qr_data)
+        ticket = Ticket(order_id=order.id, seat_number=seat, ticket_code=code, qr_data=qr_data)
         db.session.add(ticket)
         results.append({'seat': seat, 'code': code})
     return results
@@ -99,12 +143,12 @@ def seed_data():
     if Event.query.count() > 0:
         return
     events = [
-        {"title": "Neon Horizon World Tour",      "category": "Concert",    "description": "An electrifying world tour featuring chart-topping artists and stunning light shows.", "date": "Oct 24, 2024", "time": "8:00 PM",  "venue": "Starlight Arena, LA",           "image_url": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "VIP Access",    "price": 199.00, "qty": 50},  {"name": "Regular Entry",    "price": 45.00,  "qty": 500}]},
-        {"title": "Neon Dreams World Tour 2024",  "category": "Concert",    "description": "Experience the magic of Neon Dreams live on stage with a full orchestra.",              "date": "Nov 15, 2024", "time": "7:30 PM",  "venue": "Madison Square Garden, NY",      "image_url": "https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "VIP Floor A",   "price": 299.00, "qty": 100}, {"name": "Section B",        "price": 99.00,  "qty": 400}]},
-        {"title": "Summer Solstice Music Festival","category": "Festival",   "description": "A three-day outdoor music festival celebrating the longest day of the year.",          "date": "Jun 21, 2025", "time": "12:00 PM", "venue": "Golden Gate Park, SF",           "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "3-Day Pass",    "price": 150.00, "qty": 1000},{"name": "Day Pass",         "price": 60.00,  "qty": 3000}]},
-        {"title": "Tech Summit 2024",             "category": "Conference", "description": "The premier technology conference bringing together the brightest minds in tech.",       "date": "Dec 5, 2024",  "time": "9:00 AM",  "venue": "Moscone Center, SF",             "image_url": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "Speaker Pass",  "price": 500.00, "qty": 20},  {"name": "Attendee Pass",    "price": 199.00, "qty": 800}]},
-        {"title": "Championship Finals 2024",     "category": "Sports",     "description": "Watch the ultimate showdown between the top teams of the season.",                      "date": "Dec 18, 2024", "time": "6:00 PM",  "venue": "SoFi Stadium, LA",               "image_url": "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "Courtside",     "price": 350.00, "qty": 50},  {"name": "Upper Deck",       "price": 75.00,  "qty": 2000}]},
-        {"title": "Broadway Night: Hamilton",     "category": "Theater",    "description": "The award-winning Broadway musical Hamilton returns for a limited run.",                "date": "Jan 10, 2025", "time": "8:00 PM",  "venue": "Richard Rodgers Theatre, NY",    "image_url": "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "Orchestra",     "price": 249.00, "qty": 200}, {"name": "Mezzanine",        "price": 149.00, "qty": 300}]},
+        {"title": "Neon Horizon World Tour",      "category": "Concert",    "description": "An electrifying world tour featuring chart-topping artists and stunning light shows.", "date": "Oct 24, 2024", "time": "8:00 PM",  "venue": "Starlight Arena, LA",           "image_url": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "Floor Left", "price": 299.00, "qty": 10}, {"name": "Section 101", "price": 250.00, "qty": 14}, {"name": "Section 102", "price": 129.00, "qty": 8}]},
+        {"title": "Neon Dreams World Tour 2024",  "category": "Concert",    "description": "Experience the magic of Neon Dreams live on stage with a full orchestra.",              "date": "Nov 15, 2024", "time": "7:30 PM",  "venue": "Madison Square Garden, NY",      "image_url": "https://images.unsplash.com/photo-1540039155732-68ee23e15b51?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "Section 103", "price": 299.00, "qty": 6}, {"name": "Section 104", "price": 99.00,  "qty": 20}]},
+        {"title": "Summer Solstice Music Festival","category": "Festival",   "description": "A three-day outdoor music festival celebrating the longest day of the year.",          "date": "Jun 21, 2025", "time": "12:00 PM", "venue": "Golden Gate Park, SF",           "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "Floor Right", "price": 150.00, "qty": 1000},{"name": "General Admission", "price": 60.00, "qty": 3000}]},
+        {"title": "Tech Summit 2024",             "category": "Conference", "description": "The premier technology conference bringing together the brightest minds in tech.",       "date": "Dec 5, 2024",  "time": "9:00 AM",  "venue": "Moscone Center, SF",             "image_url": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "Section 101",  "price": 500.00, "qty": 20},  {"name": "Section 102",    "price": 199.00, "qty": 800}]},
+        {"title": "Championship Finals 2024",     "category": "Sports",     "description": "Watch the ultimate showdown between the top teams of the season.",                      "date": "Dec 18, 2024", "time": "6:00 PM",  "venue": "SoFi Stadium, LA",               "image_url": "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "Floor Left",     "price": 350.00, "qty": 50},  {"name": "Section 104",       "price": 75.00,  "qty": 2000}]},
+        {"title": "Broadway Night: Hamilton",     "category": "Theater",    "description": "The award-winning Broadway musical Hamilton returns for a limited run.",                "date": "Jan 10, 2025", "time": "8:00 PM",  "venue": "Richard Rodgers Theatre, NY",    "image_url": "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=800&q=80", "tiers": [{"name": "Floor Right",     "price": 249.00, "qty": 200}, {"name": "Section 103",        "price": 149.00, "qty": 300}]},
     ]
     for e in events:
         ev = Event(title=e['title'], category=e['category'], description=e['description'],
@@ -185,9 +229,30 @@ def create_event():
     for t in data.get('tiers', []):
         db.session.add(TicketTier(event_id=ev.id, name=t.get('name',''),
             price=float(t.get('price',0)), quantity=int(t.get('quantity',0)),
-            available=int(t.get('quantity',0))))
+            available=int(t.get('quantity',0)), view_image=t.get('view_image','')))
     db.session.commit()
     return jsonify({'message': 'Event created', 'event_id': ev.id}), 201
+
+@app.route('/api/admin/events/<int:event_id>', methods=['PUT'])
+def update_event(event_id):
+    event = Event.query.get_or_404(event_id)
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data'}), 400
+    if 'image_url' in data:
+        event.image_url = data['image_url']
+    if 'title' in data:
+        event.title = data['title']
+    if 'venue' in data:
+        event.venue = data['venue']
+    if 'date' in data:
+        event.date = data['date']
+    if 'time' in data:
+        event.time = data['time']
+    if 'description' in data:
+        event.description = data['description']
+    db.session.commit()
+    return jsonify({'message': 'Event updated', 'event_id': event.id})
 
 # ── IMAGE UPLOAD ──────────────────────────────────────────────────────────────
 @app.route('/api/admin/upload', methods=['POST'])
@@ -445,14 +510,42 @@ def fix_image_urls():
         db.session.commit()
         logger.info(f"Fixed image URLs for {fixed} event(s)")
 
+def force_update_event_images():
+    """Force-apply curated images to specific events by title.
+    Add entries here to update any event's image on the next deploy/restart.
+    """
+    CURATED = {
+        # Event 1: Neon Horizon World Tour — vivid concert stage with crowd
+        'Neon Horizon World Tour': 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=800&q=80',
+    }
+    updated = 0
+    for title, new_url in CURATED.items():
+        ev = Event.query.filter(Event.title.ilike(title)).first()
+        if ev and ev.image_url != new_url:
+            ev.image_url = new_url
+            updated += 1
+    if updated > 0:
+        db.session.commit()
+        logger.info(f"force_update_event_images: updated {updated} event(s)")
+
 def init_db():
     """Initialize database tables and seed data"""
     try:
         logger.info("Initializing database...")
         db.create_all()
         logger.info("Database tables created")
-        fix_image_urls()   # ← Fix broken local image filenames first
-        seed_data()
+        
+        try:
+            with db.engine.connect() as conn:
+                conn.execute(text("ALTER TABLE ticket_tiers ADD COLUMN view_image VARCHAR(500) DEFAULT ''"))
+                conn.commit()
+            logger.info("Migrated ticket_tiers: Added view_image column")
+        except Exception:
+            pass
+            
+        fix_image_urls()          # Fix broken local image filenames first
+        seed_data()               # Seed sample events if DB is empty
+        force_update_event_images()  # Apply curated image overrides
         logger.info("Database initialized successfully")
     except Exception as e:
         logger.error(f"Database initialization failed: {e}")

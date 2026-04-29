@@ -35,16 +35,18 @@ class Event(db.Model):
 
 class TicketTier(db.Model):
     __tablename__ = 'ticket_tiers'
-    id        = db.Column(db.Integer, primary_key=True)
-    event_id  = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
-    name      = db.Column(db.String(100), nullable=False)
-    price     = db.Column(db.Float, nullable=False)
-    quantity  = db.Column(db.Integer, nullable=False)
-    available = db.Column(db.Integer, nullable=False)
+    id         = db.Column(db.Integer, primary_key=True)
+    event_id   = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    name       = db.Column(db.String(100), nullable=False)
+    price      = db.Column(db.Float, nullable=False)
+    quantity   = db.Column(db.Integer, nullable=False)
+    available  = db.Column(db.Integer, nullable=False)
+    view_image = db.Column(db.String(500), default='')  # View from this section
 
     def to_dict(self):
         return {'id': self.id, 'name': self.name, 'price': self.price,
-                'quantity': self.quantity, 'available': self.available}
+                'quantity': self.quantity, 'available': self.available,
+                'view_image': self.view_image}
 
 
 class Order(db.Model):

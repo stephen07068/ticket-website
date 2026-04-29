@@ -120,12 +120,12 @@ footer{background:#fff;border-top:1px solid #f0f0f0;padding:32px 24px;display:fl
 
 <!-- HERO -->
 <div class="hero">
-  <img class="hero-img" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80" alt="Featured Event"/>
+  <img id="hero-img" class="hero-img" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80" alt="Featured Event"/>
   <div class="hero-content">
-    <div class="hero-tag">Featuring: Neon Eclipse Tour</div>
-    <h1 class="hero-title">Experience the Pulse of Modern Sound.</h1>
-    <p class="hero-desc">Join the world's most anticipated electronic music journey of the year. Limited tickets available for the final leg.</p>
-    <a href="/event" class="hero-cta">
+    <div id="hero-tag" class="hero-tag">Featuring: Live Event</div>
+    <h1 id="hero-title" class="hero-title">Experience the Pulse of Modern Sound.</h1>
+    <p id="hero-desc" class="hero-desc">Discover the best events happening right now. Get your tickets before they sell out.</p>
+    <a id="hero-link" href="/event" class="hero-cta">
       Buy Tickets
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
@@ -280,6 +280,16 @@ async function loadEvents(category = ''){
     if(data && data.length) {
       allEvents = data;
       renderEvents(data);
+      
+      // Update Hero Banner dynamically with the first event
+      const featured = data[0];
+      const imageUrl = featured.image_url || featured.image;
+      document.getElementById('hero-img').src = imageUrl && !imageUrl.startsWith('http') ? `/${imageUrl}` : (imageUrl || 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80');
+      document.getElementById('hero-tag').textContent = `Featuring: ${featured.category ? featured.category.toUpperCase() : 'LIVE EVENT'}`;
+      document.getElementById('hero-title').textContent = featured.title;
+      document.getElementById('hero-desc').textContent = featured.description || "Don't miss out on this spectacular event. Get your tickets now!";
+      document.getElementById('hero-link').href = `/event?id=${featured.id}`;
+      
     } else {
       allEvents = DEMO_EVENTS;
       renderEvents(DEMO_EVENTS);
