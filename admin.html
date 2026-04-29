@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -192,7 +192,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 
 <!-- TOAST NOTIFICATION -->
 <div class="toast" id="toastEl">
-  <div class="toast-icon">âš ï¸</div>
+  <div class="toast-icon">⚠️</div>
   <div>
     <div class="toast-title" id="toastTitle">Please fill in required fields</div>
     <div class="toast-msg" id="toastMsg">Please fill in Title, Venue and Date.</div>
@@ -211,23 +211,23 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 
   <nav class="nav-menu">
     <button class="nav-item" id="nav-dashboard" onclick="showTab('dashboard')">
-      <span class="nav-icon">ðŸ“Š</span> Dashboard
+      <span class="nav-icon">📊</span> Dashboard
     </button>
     <button class="nav-item" id="nav-orders" onclick="showTab('orders')">
-      <span class="nav-icon">ðŸ“‹</span> Orders
+      <span class="nav-icon">📋</span> Orders
       <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
     </button>
     <button class="nav-item" id="nav-manage-events" onclick="showTab('manage-events')">
-      <span class="nav-icon">ðŸŽ«</span> Manage Events
+      <span class="nav-icon">🎫</span> Manage Events
     </button>
     <button class="nav-item" id="nav-events" onclick="showTab('events')">
-      <span class="nav-icon">âž•</span> Create Event
+      <span class="nav-icon">➕</span> Create Event
     </button>
   </nav>
 
   <div class="sidebar-bottom">
     <a href="/admin" class="bottom-item">
-      <span class="nav-icon">ðŸšª</span> Logout
+      <span class="nav-icon">🚪</span> Logout
     </a>
   </div>
 </aside>
@@ -272,7 +272,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
           </tr>
         </thead>
         <tbody id="ordersBody">
-          <tr><td colspan="6" class="empty-state"><div class="icon">â³</div><p>Loading ordersâ€¦</p></td></tr>
+          <tr><td colspan="6" class="empty-state"><div class="icon">⏳</div><p>Loading orders…</p></td></tr>
         </tbody>
       </table>
     </div>
@@ -284,17 +284,17 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-label">Total Orders</div>
-        <div class="stat-value" id="stat-total">â€”</div>
+        <div class="stat-value" id="stat-total">—</div>
         <div class="stat-sub">All time</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Needs Approval</div>
-        <div class="stat-value" id="stat-pending" style="color:#d97706">â€”</div>
+        <div class="stat-value" id="stat-pending" style="color:#d97706">—</div>
         <div class="stat-sub">Awaiting your action</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Approved</div>
-        <div class="stat-value" id="stat-approved" style="color:#22c55e">â€”</div>
+        <div class="stat-value" id="stat-approved" style="color:#22c55e">—</div>
         <div class="stat-sub">Tickets issued</div>
       </div>
     </div>
@@ -319,7 +319,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
           </tr>
         </thead>
         <tbody id="eventsBody">
-          <tr><td colspan="7" class="empty-state"><div class="icon">â³</div><p>Loading eventsâ€¦</p></td></tr>
+          <tr><td colspan="7" class="empty-state"><div class="icon">⏳</div><p>Loading events…</p></td></tr>
         </tbody>
       </table>
     </div>
@@ -356,7 +356,7 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
       </div>
       <div class="form-group">
         <label>Description</label>
-        <textarea class="form-input" id="evDesc" rows="4" placeholder="Tell attendees what to expectâ€¦" style="resize:vertical"></textarea>
+        <textarea class="form-input" id="evDesc" rows="4" placeholder="Tell attendees what to expect…" style="resize:vertical"></textarea>
       </div>
     </div>
 
@@ -366,19 +366,19 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 
       <!-- Option A: Paste an external image URL (recommended for Railway - images won't be lost on redeploy) -->
       <div class="form-group" style="margin-bottom:12px">
-        <label>ðŸ“Ž Image URL (Recommended)</label>
+        <label>📎 Image URL (Recommended)</label>
         <input class="form-input" id="evImageUrl" placeholder="https://example.com/your-event-image.jpg" oninput="previewFromUrl(this.value)"/>
-        <div style="font-size:11px;color:#888;margin-top:4px">ðŸ’¡ Paste any public image URL (Imgur, Google Drive, Unsplash, etc.). Images uploaded via file will be lost when the server restarts.</div>
+        <div style="font-size:11px;color:#888;margin-top:4px">💡 Paste any public image URL (Imgur, Google Drive, Unsplash, etc.). Images uploaded via file will be lost when the server restarts.</div>
       </div>
 
-      <div style="text-align:center;font-size:12px;color:#aaa;margin:12px 0;">â€” OR upload a file (local/testing only) â€”</div>
+      <div style="text-align:center;font-size:12px;color:#aaa;margin:12px 0;">— OR upload a file (local/testing only) —</div>
 
       <!-- Option B: File upload -->
       <label for="evImageInput" id="uploadArea" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:2px dashed #d0c4f7;border-radius:12px;padding:32px 20px;cursor:pointer;background:#faf8ff;transition:background .2s;">
-        <div style="width:52px;height:52px;background:#f0ebff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;">ðŸ–¼ï¸</div>
+        <div style="width:52px;height:52px;background:#f0ebff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;">🖼️</div>
         <div>
           <div style="font-size:14px;font-weight:600;color:#6c2bd9;text-align:center">Click to Upload Banner Image</div>
-          <div style="font-size:12px;color:#999;text-align:center;margin-top:4px">JPG, PNG, GIF, WEBP â€¢ Max 10MB</div>
+          <div style="font-size:12px;color:#999;text-align:center;margin-top:4px">JPG, PNG, GIF, WEBP • Max 10MB</div>
         </div>
         <input type="file" id="evImageInput" accept="image/*" style="display:none" onchange="previewImage(this)"/>
       </label>
@@ -426,9 +426,9 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
             <label>View Image</label>
             <div style="display:flex; gap:8px;">
               <input class="form-input tier-view-image-url" placeholder="Paste URL..." style="flex:1"/>
-              <input type="file" class="tier-view-image-file" accept="image/*" style="display:none" onchange="this.nextElementSibling.nextElementSibling.textContent = this.files[0] ? this.files[0].name : 'ðŸ“· Photo showing the view from this section'"/>
+              <input type="file" class="tier-view-image-file" accept="image/*" style="display:none" onchange="this.nextElementSibling.nextElementSibling.textContent = this.files[0] ? this.files[0].name : '📷 Photo showing the view from this section'"/>
               <button type="button" class="btn-create" style="padding:0 14px;" onclick="this.previousElementSibling.click()">Upload File</button>
-              <div style="font-size:11px;color:#888;display:flex;align-items:center;" class="tier-view-file-name">ðŸ“· Photo showing the view from this section</div>
+              <div style="font-size:11px;color:#888;display:flex;align-items:center;" class="tier-view-file-name">📷 Photo showing the view from this section</div>
             </div>
           </div>
         </div>
@@ -444,29 +444,29 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 <div class="modal-overlay" id="editModal" onclick="handleModalBackdrop(event)">
   <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-title">âœï¸ Update Event Image</div>
-      <button class="modal-close" onclick="closeEditModal()">âœ•</button>
+      <div class="modal-title">✏️ Update Event Image</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
     </div>
     <div class="modal-sub" id="editModalEventName">Event name</div>
 
     <!-- Current image -->
     <div id="editCurrentWrap" style="display:none;margin-bottom:16px;border-radius:10px;overflow:hidden">
       <img id="editCurrentImg" src="" alt="Current" style="width:100%;height:150px;object-fit:cover;display:block"/>
-      <div style="font-size:11px;color:#888;padding:6px 12px;background:#f9f9fc">ðŸ“· Current image</div>
+      <div style="font-size:11px;color:#888;padding:6px 12px;background:#f9f9fc">📷 Current image</div>
     </div>
 
     <!-- URL input -->
     <div class="form-group" style="margin-bottom:10px">
-      <label>ðŸ“Ž Paste Image URL (Recommended)</label>
+      <label>📎 Paste Image URL (Recommended)</label>
       <input class="form-input" id="editImageUrl" placeholder="https://example.com/image.jpg" oninput="editPreviewUrl(this.value)"/>
-      <div style="font-size:11px;color:#aaa;margin-top:4px">Paste any public image URL â€” this persists across redeploys.</div>
+      <div style="font-size:11px;color:#aaa;margin-top:4px">Paste any public image URL — this persists across redeploys.</div>
     </div>
 
-    <div style="text-align:center;font-size:12px;color:#bbb;margin:14px 0">â€” OR upload a file (local/testing only) â€”</div>
+    <div style="text-align:center;font-size:12px;color:#bbb;margin:14px 0">— OR upload a file (local/testing only) —</div>
 
     <!-- File upload -->
     <label for="editImageFile" class="edit-upload-area">
-      <div style="font-size:22px">ðŸ–¼ï¸</div>
+      <div style="font-size:22px">🖼️</div>
       <div style="font-size:13px;font-weight:600;color:#6c2bd9">Click to upload image file</div>
       <div style="font-size:11px;color:#aaa">JPG, PNG, GIF, WEBP</div>
       <input type="file" id="editImageFile" accept="image/*" style="display:none" onchange="editPreviewFile(this)"/>
@@ -477,12 +477,12 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
       <img id="editNewPreviewImg" src="" alt="Preview" style="width:100%;height:150px;object-fit:cover;display:block"/>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#f0ebff">
         <span id="editNewPreviewName" style="font-size:12px;color:#6c2bd9;font-weight:500"></span>
-        <button onclick="clearEditPreview()" style="border:none;background:none;color:#ef4444;cursor:pointer;font-size:12px;font-weight:700">âœ• Remove</button>
+        <button onclick="clearEditPreview()" style="border:none;background:none;color:#ef4444;cursor:pointer;font-size:12px;font-weight:700">✕ Remove</button>
       </div>
     </div>
 
     <div style="display:flex;gap:12px;margin-top:24px">
-      <button class="btn-create" id="editSaveBtn" onclick="submitImageUpdate()" style="flex:1">ðŸ’¾ Save Image</button>
+      <button class="btn-create" id="editSaveBtn" onclick="submitImageUpdate()" style="flex:1">💾 Save Image</button>
       <button onclick="closeEditModal()" style="flex:1;padding:13px;border:1.5px solid #ddd;border-radius:10px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:#555">Cancel</button>
     </div>
   </div>
@@ -490,17 +490,17 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
 
 <script src="/lib/api.js"></script>
 <script>
-// â”€â”€â”€ Auth Guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Auth Guard ───────────────────────────────────────────────────────────────
 if (!sessionStorage.getItem('adminLoggedIn')) {
   window.location.href = '/admin';
 }
 
-// â”€â”€â”€ GLOBAL ERROR HANDLER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── GLOBAL ERROR HANDLER ─────────────────────────────────────────────────────
 window.addEventListener('error', function(e) {
   console.error('Global error:', e.message, e.filename, e.lineno);
 });
 
-// â”€â”€â”€ TEST BUTTON CLICK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── TEST BUTTON CLICK ────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   console.log('DOM loaded, setting up button listener');
   const btn = document.getElementById('createBtn');
@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// â”€â”€â”€ Tab Switching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Tab Switching ────────────────────────────────────────────────────────────
 function showTab(tab) {
   // Hide all panels
   document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
@@ -539,7 +539,7 @@ function showTab(tab) {
   if (tab === 'manage-events') loadManageEvents();
 }
 
-// â”€â”€â”€ Orders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Orders ──────────────────────────────────────────────────────────────────
 let currentFilter = '';
 
 function filterOrders(btn, status) {
@@ -551,7 +551,7 @@ function filterOrders(btn, status) {
 
 async function loadOrders(statusFilter) {
   const tbody = document.getElementById('ordersBody');
-  tbody.innerHTML = '<tr><td colspan="6" style="padding:32px;text-align:center;color:#888">Loadingâ€¦</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6" style="padding:32px;text-align:center;color:#888">Loading…</td></tr>';
   try {
     const orders = await API.getAdminOrders(statusFilter);
 
@@ -589,9 +589,9 @@ async function loadOrders(statusFilter) {
 
       const canApprove = o.status === 'payment_submitted' || o.status === 'pending_payment';
       const actions = canApprove
-        ? `<button class="approve-btn" data-approve-id="${o.order_id}" onclick="approveOrder(${o.order_id}, this)">âœ“ Approve</button>
-           <button class="reject-btn" data-reject-id="${o.order_id}" onclick="rejectOrder(${o.order_id}, this)">âœ— Reject</button>`
-        : `<span style="color:#bbb;font-size:13px">â€”</span>`;
+        ? `<button class="approve-btn" data-approve-id="${o.order_id}" onclick="approveOrder(${o.order_id}, this)">✓ Approve</button>
+           <button class="reject-btn" data-reject-id="${o.order_id}" onclick="rejectOrder(${o.order_id}, this)">✗ Reject</button>`
+        : `<span style="color:#bbb;font-size:13px">—</span>`;
 
       return `<tr>
         <td><strong>#${o.order_id}</strong></td>
@@ -601,7 +601,7 @@ async function loadOrders(statusFilter) {
         </td>
         <td>
           <div style="font-weight:500">${o.event}</div>
-          <div style="font-size:12px;color:#888">${o.quantity}Ã— ${o.tier}</div>
+          <div style="font-size:12px;color:#888">${o.quantity}× ${o.tier}</div>
         </td>
         <td>
           <div style="font-weight:700;color:#6c2bd9">$${Number(o.total).toFixed(2)}</div>
@@ -619,28 +619,28 @@ async function loadOrders(statusFilter) {
 }
 
 async function approveOrder(id, btn) {
-  if (btn) { btn.disabled = true; btn.textContent = 'Processingâ€¦'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
   try {
     await API.adminApprove(id);
     loadOrders(currentFilter);
   } catch (e) {
     alert('Error: ' + e.message);
-    if (btn) { btn.disabled = false; btn.innerHTML = 'âœ“ Approve'; }
+    if (btn) { btn.disabled = false; btn.innerHTML = '✓ Approve'; }
   }
 }
 
 async function rejectOrder(id, btn) {
-  if (btn) { btn.disabled = true; btn.textContent = 'Processingâ€¦'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
   try {
     await API.adminReject(id);
     loadOrders(currentFilter);
   } catch (e) {
     alert('Error: ' + e.message);
-    if (btn) { btn.disabled = false; btn.innerHTML = 'âœ— Reject'; }
+    if (btn) { btn.disabled = false; btn.innerHTML = '✗ Reject'; }
   }
 }
 
-// â”€â”€â”€ Dashboard Stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Dashboard Stats ─────────────────────────────────────────────────────────
 async function loadStats() {
   try {
     const all = await API.getAdminOrders('');
@@ -650,7 +650,7 @@ async function loadStats() {
   } catch (e) {}
 }
 
-// â”€â”€â”€ Image Upload Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Image Upload Helpers ────────────────────────────────────────────────────
 let uploadedImageUrl = '';
 
 function previewImage(input) {
@@ -680,7 +680,7 @@ function clearImage() {
   uploadedImageUrl = '';
 }
 
-// â”€â”€â”€ Popup Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Popup Toast ──────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(title, msg) {
   const t = document.getElementById('toastEl');
@@ -725,17 +725,17 @@ function addTierRow() {
       <label>View Image</label>
       <div style="display:flex; gap:8px;">
         <input class="form-input tier-view-image-url" placeholder="Paste URL..." style="flex:1"/>
-        <input type="file" class="tier-view-image-file" accept="image/*" style="display:none" onchange="this.nextElementSibling.nextElementSibling.textContent = this.files[0] ? this.files[0].name : 'ðŸ“· Photo showing the view from this section'"/>
+        <input type="file" class="tier-view-image-file" accept="image/*" style="display:none" onchange="this.nextElementSibling.nextElementSibling.textContent = this.files[0] ? this.files[0].name : '📷 Photo showing the view from this section'"/>
         <button type="button" class="btn-create" style="padding:0 14px;" onclick="this.previousElementSibling.click()">Upload File</button>
-        <div style="font-size:11px;color:#888;display:flex;align-items:center;" class="tier-view-file-name">ðŸ“· Photo showing the view from this section</div>
+        <div style="font-size:11px;color:#888;display:flex;align-items:center;" class="tier-view-file-name">📷 Photo showing the view from this section</div>
       </div>
     </div>
-    <button onclick="this.parentElement.remove()" style="position:absolute; top:8px; right:8px; background:#fee2e2; border:none; color:#ef4444; font-size:14px; cursor:pointer; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700;" title="Remove Listing">âœ•</button>
+    <button onclick="this.parentElement.remove()" style="position:absolute; top:8px; right:8px; background:#fee2e2; border:none; color:#ef4444; font-size:14px; cursor:pointer; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700;" title="Remove Listing">✕</button>
   `;
   tiersList.appendChild(div);
 }
 
-// â”€â”€â”€ Events Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Events Panel ─────────────────────────────────────────────────────────────
 
 window.submitCreateEvent = async function() {
   console.log('=== CREATE EVENT CALLED ===');
@@ -769,7 +769,7 @@ window.submitCreateEvent = async function() {
 
   const btn = document.getElementById('createBtn');
   btn.disabled = true; 
-  btn.textContent = 'Creatingâ€¦';
+  btn.textContent = 'Creating…';
 
   try {
     // 1. Get image URL - prefer URL field, then try file upload
@@ -782,7 +782,7 @@ window.submitCreateEvent = async function() {
       image_url = urlInput;
     } else if (imageFile) {
       console.log('Uploading image:', imageFile.name);
-      btn.textContent = 'Uploading imageâ€¦';
+      btn.textContent = 'Uploading image…';
       const formData = new FormData();
       formData.append('image', imageFile);
       const upRes = await fetch('/api/admin/upload', {
@@ -796,7 +796,7 @@ window.submitCreateEvent = async function() {
       } else {
         console.warn('Image upload failed, proceeding without image.');
       }
-      btn.textContent = 'Creating eventâ€¦';
+      btn.textContent = 'Creating event…';
     }
 
     const tierRows = document.querySelectorAll('.tier-row');
@@ -816,7 +816,7 @@ window.submitCreateEvent = async function() {
       const fileInput = row.querySelector('.tier-view-image-file');
       
       if (!view_image && fileInput && fileInput.files[0]) {
-        btn.textContent = `Uploading view for ${section}â€¦`;
+        btn.textContent = `Uploading view for ${section}…`;
         const formData = new FormData();
         formData.append('image', fileInput.files[0]);
         try {
@@ -851,7 +851,7 @@ window.submitCreateEvent = async function() {
     const result = await API.createEvent(payload);
     
     console.log('Event created:', result);
-    alert(`âœ… Event "${title}" created successfully!`);
+    alert(`✅ Event "${title}" created successfully!`);
     
     // Clear form (null-safe)
     const safeSet = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
@@ -890,10 +890,10 @@ window.submitCreateEvent = async function() {
   }
 }
 
-// â”€â”€â”€ Manage Events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Manage Events ────────────────────────────────────────────────────────────
 async function loadManageEvents() {
   const tbody = document.getElementById('eventsBody');
-  tbody.innerHTML = '<tr><td colspan="7" style="padding:32px;text-align:center;color:#888">Loadingâ€¦</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" style="padding:32px;text-align:center;color:#888">Loading…</td></tr>';
   
   try {
     const events = await API.getAdminEvents();
@@ -911,7 +911,7 @@ async function loadManageEvents() {
         <td><strong>#${e.id}</strong></td>
         <td>
           <div style="font-weight:600">${e.title}</div>
-          ${e.image_url ? '<div style="font-size:11px;color:#888">ðŸ“· Has image</div>' : ''}
+          ${e.image_url ? '<div style="font-size:11px;color:#888">📷 Has image</div>' : ''}
         </td>
         <td><span style="font-size:12px;font-weight:600;color:#6c2bd9;text-transform:uppercase">${e.category}</span></td>
         <td>
@@ -924,8 +924,8 @@ async function loadManageEvents() {
           <div style="font-size:11px;color:#888">${totalSeats} total seats</div>
         </td>
         <td style="white-space:nowrap">
-          <button class="edit-btn" onclick="openEditImage(${e.id}, '${e.title.replace(/'/g, "\\'").replace(/`/g, "'")}', '${(e.image_url||'').replace(/'/g,"\\'")}')">âœï¸ Edit Image</button>
-          <button class="reject-btn" onclick="deleteEventConfirm(${e.id}, '${e.title.replace(/'/g, "\\'")}')">ðŸ—‘ Delete</button>
+          <button class="edit-btn" onclick="openEditImage(${e.id}, '${e.title.replace(/'/g, "\\'").replace(/`/g, "'")}', '${(e.image_url||'').replace(/'/g,"\\'")}')">✏️ Edit Image</button>
+          <button class="reject-btn" onclick="deleteEventConfirm(${e.id}, '${e.title.replace(/'/g, "\\'")}')">🗑 Delete</button>
         </td>
       </tr>`;
     }).join('');
@@ -939,14 +939,14 @@ async function deleteEventConfirm(eventId, eventTitle) {
   if (!confirm(`Are you sure you want to delete "${eventTitle}"?\n\nThis action cannot be undone.`)) return;
   try {
     await API.deleteEvent(eventId);
-    alert(`âœ… Event "${eventTitle}" deleted successfully!`);
+    alert(`✅ Event "${eventTitle}" deleted successfully!`);
     loadManageEvents();
   } catch (e) {
-    alert(`âŒ Failed to delete event: ${e.message}`);
+    alert(`❌ Failed to delete event: ${e.message}`);
   }
 }
 
-// â”€â”€â”€ Edit Image Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Edit Image Modal ─────────────────────────────────────────────────────────
 let editTargetEventId = null;
 
 function openEditImage(id, title, currentUrl) {
@@ -1014,13 +1014,13 @@ async function submitImageUpdate() {
   }
 
   btn.disabled = true;
-  btn.textContent = 'Savingâ€¦';
+  btn.textContent = 'Saving…';
 
   try {
     let image_url = urlInput;
 
     if (!urlInput && imageFile) {
-      btn.textContent = 'Uploadingâ€¦';
+      btn.textContent = 'Uploading…';
       const formData = new FormData();
       formData.append('image', imageFile);
       const upRes = await fetch('/api/admin/upload', { method: 'POST', body: formData });
@@ -1031,19 +1031,18 @@ async function submitImageUpdate() {
 
     await API.updateEvent(editTargetEventId, { image_url });
     closeEditModal();
-    showToast('Image Updated âœ…', 'The event image has been updated successfully.');
+    showToast('Image Updated ✅', 'The event image has been updated successfully.');
     loadManageEvents();
   } catch (e) {
     showToast('Error', e.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = 'ðŸ’¾ Save Image';
+    btn.textContent = '💾 Save Image';
   }
 }
 
-// â”€â”€â”€ Boot: default to Orders tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Boot: default to Orders tab ─────────────────────────────────────────────
 showTab('orders');
 </script>
 </body>
 </html>
-
