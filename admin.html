@@ -158,11 +158,55 @@ body{font-family:'Inter',sans-serif;background:#f4f5f8;color:#111;display:flex;m
   .filter-tabs{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;}
   .filter-btn{white-space:nowrap;padding:7px 14px;font-size:12px;flex-shrink:0;}
 
-  /* Orders table — scroll horizontally */
-  .orders-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
-  .orders-table{min-width:600px;}
-  .orders-table th,.orders-table td{padding:10px 12px;font-size:12px;}
-  .approve-btn,.reject-btn{padding:5px 10px;font-size:11px;margin-right:4px;}
+  /* Orders table — convert to responsive cards */
+  .orders-table-wrap { border: none; background: transparent; overflow: visible; padding: 0; }
+  .orders-table { min-width: 0; display: block; border: none; }
+  .orders-table thead { display: none; }
+  .orders-table tbody { display: block; }
+  .orders-table tr { 
+    display: block; 
+    background: #fff; 
+    border-radius: 12px; 
+    border: 1px solid #e5e5e5; 
+    margin-bottom: 16px; 
+    padding: 16px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+  .orders-table td { 
+    display: flex; 
+    flex-direction: column; 
+    padding: 10px 0; 
+    border-bottom: 1px solid #f5f5f5; 
+    text-align: left; 
+    align-items: flex-start;
+  }
+  .orders-table td:last-child { border-bottom: none; padding-bottom: 0; }
+  
+  .orders-table td::before {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  #panel-orders .orders-table td:nth-child(1)::before { content: "Order ID"; }
+  #panel-orders .orders-table td:nth-child(2)::before { content: "Customer"; }
+  #panel-orders .orders-table td:nth-child(3)::before { content: "Event"; }
+  #panel-orders .orders-table td:nth-child(4)::before { content: "Payment"; }
+  #panel-orders .orders-table td:nth-child(5)::before { content: "Status"; }
+  #panel-orders .orders-table td:nth-child(6)::before { content: "Actions"; }
+
+  #panel-manage-events .orders-table td:nth-child(1)::before { content: "ID"; }
+  #panel-manage-events .orders-table td:nth-child(2)::before { content: "Event"; }
+  #panel-manage-events .orders-table td:nth-child(3)::before { content: "Category"; }
+  #panel-manage-events .orders-table td:nth-child(4)::before { content: "Date"; }
+  #panel-manage-events .orders-table td:nth-child(5)::before { content: "Venue"; }
+  #panel-manage-events .orders-table td:nth-child(6)::before { content: "Tiers"; }
+  #panel-manage-events .orders-table td:nth-child(7)::before { content: "Actions"; }
+
+  .approve-btn,.reject-btn{padding:8px 12px;font-size:12px;margin-right:6px;margin-top:6px;}
 
   /* Stats grid */
   .stats-grid{grid-template-columns:1fr;gap:12px;margin-bottom:20px;}
