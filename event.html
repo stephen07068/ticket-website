@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -129,6 +129,39 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
   .seats-wrap{padding:16px;margin-bottom:20px;}
   .seats-wrap-header{margin-bottom:14px;}
   .seats-wrap-header h2{font-size:16px;}
+  .page-footer{padding:20px 16px;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+}
+
+/* == MOBILE RESPONSIVE (max-width:800px) == */
+@media(max-width:800px){
+  nav{padding:0 16px;}
+  .nav-links{display:none;}
+  .search-bar{display:none;}
+  .content{grid-template-columns:1fr;padding:16px 14px;gap:20px;}
+  .sidebar{order:-1;position:static;}
+  .event-hero{height:220px;}
+  .event-hero-title{bottom:52px;left:16px;right:16px;}
+  .event-hero-title h1{font-size:20px;line-height:1.25;}
+  .hero-badges{bottom:16px;left:16px;gap:6px;}
+  .badge{font-size:10px;padding:5px 10px;}
+  .info-chips{gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+  .info-chip{padding:10px 12px;gap:8px;flex:1 1 calc(50% - 4px);min-width:0;}
+  .chip-icon{width:30px;height:30px;flex-shrink:0;}
+  .chip-value{font-size:13px;}
+  .features{grid-template-columns:1fr;}
+  .about h2{font-size:18px;}
+  .tier-option-top{gap:8px;}
+  .tier-price{font-size:17px;white-space:nowrap;flex-shrink:0;}
+  .tier-name{font-size:10px;}
+  .tier-desc{font-size:11px;}
+  .seat-card{flex-direction:column;}
+  .seat-image{width:100%;height:170px;}
+  .seat-content{flex-direction:row;align-items:flex-start;gap:10px;padding:12px 14px;}
+  .seat-info{flex:1;min-width:0;}
+  .seat-price-box{text-align:right;flex-shrink:0;}
+  .seat-price{font-size:17px;}
+  .seat-section{font-size:14px;}
+  #seat-listings{gap:10px;}
   .page-footer{padding:20px 16px;flex-direction:column;align-items:center;gap:8px;text-align:center;}
 }
 </style>
