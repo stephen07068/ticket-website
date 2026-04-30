@@ -181,8 +181,8 @@ footer{border-top:1px solid #f0f0f0;padding:32px 40px;display:flex;justify-conte
         <div class="order-meta">
           <div><div class="meta-label">DATE</div><div class="meta-val" id="co-date">—</div></div>
           <div><div class="meta-label">TIME</div><div class="meta-val" id="co-time">—</div></div>
-          <div><div class="meta-label">TIER</div><div class="meta-val" id="co-tier">—</div></div>
           <div><div class="meta-label">QTY</div><div class="meta-val" id="co-qty">—</div></div>
+          <div style="grid-column:1/-1"><div class="meta-label">SEATS</div><div class="meta-val" id="co-tier" style="font-size:12px;line-height:1.5">—</div></div>
         </div>
         <div class="price-row"><span id="co-tickets-label">Tickets</span><span id="co-subtotal">—</span></div>
         <div class="price-row"><span>Service Fee</span><span id="co-service">—</span></div>
@@ -238,9 +238,21 @@ if (checkout_data.title) {
   }
   document.getElementById('co-date').textContent      = checkout_data.date     || '—';
   document.getElementById('co-time').textContent      = checkout_data.time     || '—';
-  document.getElementById('co-tier').textContent      = checkout_data.tier     || '—';
+
+  // Parse the tier/seat info - may be "216|5|16-17" format or plain name
+  const rawTier = checkout_data.tier || '—';
+  let seatDisplay = rawTier;
+  if (rawTier.includes('|')) {
+    const parts = rawTier.split('|');
+    const sec   = parts[0] ? `Sec ${parts[0]}` : '';
+    const row   = parts[1] ? `Row ${parts[1]}` : '';
+    const seats = parts[2] ? `Seats ${parts[2]}` : '';
+    seatDisplay = [sec, row, seats].filter(Boolean).join('  |  ');
+  }
+  document.getElementById('co-tier').textContent      = seatDisplay;
+
   const qty = parseInt(checkout_data.qty) || 1;
-  document.getElementById('co-qty').textContent       = qty;
+  document.getElementById('co-qty').textContent       = `${qty} ticket${qty > 1 ? 's' : ''}`;
   document.getElementById('co-tickets-label').textContent = `Tickets (${qty}×)`;
 
   const price        = parseFloat(checkout_data.price) || 0;
