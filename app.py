@@ -471,21 +471,19 @@ def admin_reject():
 @app.route('/api/admin/events/<int:event_id>', methods=['DELETE'])
 def delete_event(event_id):
     event = Event.query.get_or_404(event_id)
-    # Only block deletion if there are ACTIVE orders (not rejected ones)
-    active_orders = Order.query.filter(
-        Order.event_id == event_id,
-        Order.status.in_(['pending_payment', 'payment_submitted', 'approved'])
-    ).all()
-    if active_orders:
-        return jsonify({'error': f'Cannot delete event with {len(active_orders)} active order(s). Reject all orders first.'}), 400
-    # Safe to delete: cascade delete all tickets and orders for this event
-    for order in Order.query.filter_by(event_id=event_id).all():
-        Ticket.query.filter_by(order_id=order.id).delete()
-        db.session.delete(order)
-    TicketTier.query.filter_by(event_id=event_id).delete()
-    db.session.delete(event)
-    db.session.commit()
-    return jsonify({'message': f'Event "{event.title}" deleted successfully'})
+    # Force cascade-delete: remove all tickets, orders, and tiers linked to this event
+    try:
+        for order in Order.query.filter_by(event_id=event_id).all():
+            Ticket.query.filter_by(order_id=order.id).delete()
+            db.session.delete(order)
+        TicketTier.query.filter_by(event_id=event_id).delete()
+        db.session.delete(event)
+        db.session.commit()
+        return jsonify({'message': f'Event "{event.title}" deleted successfully'})
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Delete event {event_id} failed: {e}")
+        return jsonify({'error': f'Delete failed: {str(e)}'}), 500
 
 @app.route('/api/admin/events', methods=['GET'])
 def get_admin_events():
